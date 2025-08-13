@@ -194,7 +194,7 @@ export default function SignInForm({
                 {(state) => (
                   <Button
                     type="submit"
-                    className="w-full h-11"
+                    className="w-full h-11 text-sm font-medium text-white"
                     disabled={!state.canSubmit || state.isSubmitting}
                   >
                     {state.isSubmitting ? "Signing in..." : "Sign in"}

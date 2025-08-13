@@ -175,10 +175,10 @@ const config = {
   fluidDecay: 0.98,
   trailLength: 0.8,
   stopDecay: 0.85,
-  color1: '#2d4f95',
-  color2: '#3b82f6',
-  color3: '#60a5fa',
-  color4: '#dbeafe',
+  color1: '#1e40af', // koyu mavi
+  color2: '#3b82f6', // orta mavi
+  color3: '#60a5fa', // açık mavi
+  color4: '#dbeafe', // çok açık mavi/beyaz
   colorIntensity: 1.0,
   softness: 1.0,
   lerpFactor: 0.1,
