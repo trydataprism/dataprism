@@ -62,7 +62,7 @@ import {
   cohortAnalysis,
   retentionStats,
 } from "./intelligence";
-import { exports } from "./utility";
+import { dataExports } from "./utility";
 
 // Export grouped table collections for easier imports
 export const authTables = {
@@ -126,7 +126,7 @@ export const intelligenceTables = {
 };
 
 export const utilityTables = {
-  exports,
+  dataExports,
 };
 
 // All tables in one object for convenience
@@ -181,7 +181,7 @@ export const allTables = {
   retentionStats,
 
   // Utility
-  exports,
+  dataExports,
 };
 
 // Type definitions for better TypeScript support

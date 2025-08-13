@@ -46,7 +46,7 @@ export const cacheStatus = pgEnum('cache_status', [
 ]);
 
 // Tables
-export const exports = pgTable('exports', {
+export const dataExports = pgTable('exports', {
   id: text('id').primaryKey().notNull(),
   userId: text('user_id')
     .notNull()
