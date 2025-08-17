@@ -8,7 +8,7 @@ import Loader from "@/components/loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FluidGradient } from "@/components/ui/fluid-gradient";
+import Silk from "@/components/ui/silk-gradient";
 import { useRouter } from "next/navigation";
 import { GitBranch } from "lucide-react";
 
@@ -221,7 +221,7 @@ export default function SignUpForm({
                 {(state) => (
                   <Button
                     type="submit"
-                    className="w-full h-11 text-sm font-medium text-white"
+                    className="w-full h-11 text-sm font-medium text-black"
                     disabled={!state.canSubmit || state.isSubmitting}
                   >
                     {state.isSubmitting
@@ -245,9 +245,15 @@ export default function SignUpForm({
         </div>
       </div>
 
-      {/* Right Side - Fluid Gradient */}
+      {/* Right Side - Silk Gradient */}
       <div className="flex-1 relative overflow-hidden">
-        <FluidGradient />
+        <Silk
+          color="#5c5c5c"
+          speed={4.3}
+          scale={0.9}
+          noiseIntensity={0.5}
+          rotation={0}
+        />
         {/* Back Button */}
         <Button
           variant="ghost"
