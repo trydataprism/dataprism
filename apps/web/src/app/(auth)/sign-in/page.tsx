@@ -240,7 +240,7 @@ export default function SignInForm({
           color="#5c5c5c"
           speed={4.3}
           scale={0.9}
-          noiseIntensity={1.6}
+          noiseIntensity={0.5}
           rotation={0}
         />
         {/* Back Button */}
