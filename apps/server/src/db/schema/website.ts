@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, pgEnum, index, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer, pgEnum, index, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { user } from "./auth";
 
@@ -13,7 +13,6 @@ export const websiteStatus = pgEnum('website_status', [
 
 export const trackingMode = pgEnum('tracking_mode', [
   'STANDARD',
-  'STRICT',
   'PRIVACY_FOCUSED'
 ]);
 
@@ -38,8 +37,6 @@ export const websites = pgTable('websites', {
   // Privacy & Tracking
   isPublic: boolean('is_public').default(false).notNull(),
   trackingMode: trackingMode('tracking_mode').default('STANDARD').notNull(),
-  respectDnt: boolean('respect_dnt').default(true).notNull(), // Do Not Track
-  enableCookieConsent: boolean('enable_cookie_consent').default(true).notNull(),
   
   // Tracking identifiers
   trackingId: text('tracking_id').notNull(),
@@ -52,16 +49,13 @@ export const websites = pgTable('websites', {
   isVerified: boolean('is_verified').default(false).notNull(),
   verifiedAt: timestamp('verified_at', { mode: 'string' }),
   
-  // Custom settings
-  customDomain: text('custom_domain'),
-  customLogo: text('custom_logo'),
-  customCss: text('custom_css'),
   
   // Analytics settings
-  sessionTimeout: text('session_timeout').default('30').notNull(), // minutes
-  bounceRate: text('bounce_rate').default('0').notNull(), // seconds
+  sessionTimeout: integer('session_timeout').default(30).notNull(), // minutes
+  bounceRate: integer('bounce_rate').default(0).notNull(), // seconds
   excludeIps: text('exclude_ips').array(), // IP addresses to exclude
   excludePaths: text('exclude_paths').array(), // Paths to exclude
+  allowedDomains: text('allowed_domains').array(), // Allowed domains for tracking
   
   // Filters & Rules
   botFiltering: boolean('bot_filtering').default(true).notNull(),
@@ -92,3 +86,6 @@ export const websites = pgTable('websites', {
   index('websites_is_verified_idx').on(table.isVerified),
   index('websites_created_at_idx').on(table.createdAt),
 ]);
+
+export type Website = typeof websites.$inferSelect;
+export type NewWebsite = typeof websites.$inferInsert;

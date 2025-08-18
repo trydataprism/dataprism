@@ -86,3 +86,8 @@ export const websiteInvitations = pgTable('website_invitations', {
   index('website_invitations_expires_at_idx').on(table.expiresAt),
   index('website_invitations_invited_by_idx').on(table.invitedBy),
 ]);
+
+export type WebsiteMember = typeof websiteMembers.$inferSelect;
+export type NewWebsiteMember = typeof websiteMembers.$inferInsert;
+export type WebsiteInvitation = typeof websiteInvitations.$inferSelect;
+export type NewWebsiteInvitation = typeof websiteInvitations.$inferInsert;

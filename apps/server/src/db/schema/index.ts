@@ -1,51 +1,19 @@
 // Main export file for all database schemas
-// This file exports all tables and enums from the analytics platform
 
-// === AUTH & USER MANAGEMENT ===
+// === CORE SCHEMAS ===
 export * from "./auth";
-
-// === WEBSITE TEAM MANAGEMENT ===
-export * from "./team";
-
-// === PLANS & BILLING ===
-export * from "./billing";
-
-// === WEBSITE MANAGEMENT ===
 export * from "./website";
-
-// === ANALYTICS CORE ===
+export * from "./team";
 export * from "./analytics";
-
-// === ANALYTICS REFERENCE DATA ===
 export * from "./reference";
-
-// === GOALS & FUNNELS ===
-export * from "./goals";
-
-// === AI FEATURES ===
-export * from "./ai";
-
-// === ALERTS & NOTIFICATIONS ===
 export * from "./notifications";
-
-// === PERFORMANCE & MONITORING ===
 export * from "./monitoring";
+// export * from "./materialized-views"; // Temporarily disabled due to view name conflicts
 
-// === BUSINESS INTELLIGENCE ===
-export * from "./intelligence";
-
-// === UTILITY & PERFORMANCE ===
-export * from "./utility";
-
-// === MATERIALIZED VIEWS ===
-export * from "./materialized-views";
-
-// === TABLE RELATIONSHIPS & CONSTRAINTS ===
 // Import all tables for establishing relationships
 import { user } from "./auth";
 import { websites } from "./website";
 import { websiteMembers, websiteInvitations } from "./team";
-import { plans, subscriptions, usage, paymentMethods } from "./billing";
 import { pageViews, userSessions, events } from "./analytics";
 import {
   utmCampaigns,
@@ -53,8 +21,6 @@ import {
   deviceInfo,
   locationData,
 } from "./reference";
-import { goals, funnelDefinitions, funnelGoals } from "./goals";
-import { aiTokens, aiUsage } from "./ai";
 import { alerts, notifications } from "./notifications";
 import { errorLogs, realTimeVisitors } from "./monitoring";
 import {
@@ -65,32 +31,10 @@ import {
 import { dataExports } from "./utility";
 
 // Export grouped table collections for easier imports
-export const authTables = {
-  user,
-};
-
-export const teamTables = {
-  websiteMembers,
-  websiteInvitations,
-};
-
-export const billingTables = {
-  plans,
-  subscriptions,
-  usage,
-  paymentMethods,
-};
-
-export const websiteTables = {
-  websites,
-};
-
-export const analyticsTables = {
-  pageViews,
-  userSessions,
-  events,
-};
-
+export const authTables = { user };
+export const teamTables = { websiteMembers, websiteInvitations };
+export const websiteTables = { websites };
+export const analyticsTables = { pageViews, userSessions, events };
 export const referenceDataTables = {
   utmCampaigns,
   referrerDomains,
@@ -131,47 +75,19 @@ export const utilityTables = {
 
 // All tables in one object for convenience
 export const allTables = {
-  // Auth & User Management
   user,
-
-  // Team Management
+  websites,
   websiteMembers,
   websiteInvitations,
-
-  // Billing
-  plans,
-  subscriptions,
-  usage,
-  paymentMethods,
-
-  // Websites
-  websites,
-
-  // Analytics Core
   pageViews,
   userSessions,
   events,
-
-  // Reference Data
   utmCampaigns,
   referrerDomains,
   deviceInfo,
   locationData,
-
-  // Goals & Funnels
-  goals,
-  funnelDefinitions,
-  funnelGoals,
-
-  // AI Features
-  aiTokens,
-  aiUsage,
-
-  // Notifications
   alerts,
   notifications,
-
-  // Monitoring
   errorLogs,
   realTimeVisitors,
 
@@ -187,9 +103,19 @@ export const allTables = {
 // Type definitions for better TypeScript support
 export type UserTable = typeof user;
 export type WebsiteTable = typeof websites;
+export type WebsiteMemberTable = typeof websiteMembers;
+export type WebsiteInvitationTable = typeof websiteInvitations;
 export type PageViewTable = typeof pageViews;
 export type SessionTable = typeof userSessions;
 export type EventTable = typeof events;
+export type UTMCampaignTable = typeof utmCampaigns;
+export type ReferrerDomainTable = typeof referrerDomains;
+export type DeviceInfoTable = typeof deviceInfo;
+export type LocationDataTable = typeof locationData;
+export type AlertTable = typeof alerts;
+export type NotificationTable = typeof notifications;
+export type ErrorLogTable = typeof errorLogs;
+export type RealTimeVisitorTable = typeof realTimeVisitors;
 
 // Schema version for migrations
 export const SCHEMA_VERSION = "1.0.0";
