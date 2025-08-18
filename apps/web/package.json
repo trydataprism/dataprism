@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.2.6",
     "@react-three/drei": "^10.6.1",
     "@react-three/fiber": "^9.3.0",
     "@tanstack/react-form": "^1.12.3",
