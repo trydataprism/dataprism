@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Silk from "@/components/ui/silk-gradient";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { GitBranch, Eye, EyeOff, Star, Github } from "lucide-react";
 import { useState } from "react";
 
@@ -283,40 +284,19 @@ export default function SignUpForm({
           noiseIntensity={0.5}
           rotation={0}
         />
-        {/* Back Button */}
-        <Button
-          variant="ghost"
-          className="absolute top-6 left-6 bg-white/5 backdrop-blur-sm border border-white/10 text-white hover:bg-white/10 hover:border-white/20 hover:text-white hover:cursor-pointer transition-all duration-200"
-          onClick={() => router.push("/")}
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          Back
-        </Button>
         {/* Logo and Brand */}
         <div className="absolute top-6 right-6 flex items-center gap-3">
-          <img src="/dark_logo.svg" alt="Dataprism" className="h-8 w-8" />
+          <Image src="/dark_logo.svg" alt="Dataprism" width={24} height={24} />
           <h1 className="text-2xl font-bold text-white">DATAPRISM</h1>
         </div>
 
         {/* Right side text */}
         <div className="absolute bottom-12 left-12 text-white">
-          <h2 className="text-4xl font-bold mb-2">Smart data</h2>
-          <h2 className="text-4xl font-bold mb-2">powerful analytics</h2>
-          <h2 className="text-4xl font-bold mb-4">simplified</h2>
+          <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+            Analytics made effortless
+          </h2>
           <p className="text-lg opacity-90">
-            Connect, analyze, and share powerful insights with your team.
+            Turn your data into actionable insights with ease.
           </p>
         </div>
       </div>
