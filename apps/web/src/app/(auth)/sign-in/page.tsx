@@ -58,22 +58,46 @@ export default function SignInForm({
     <div className="min-h-screen flex">
       {/* Left Side - Form */}
       <div className="flex-1 flex items-center justify-center p-8 bg-background">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold">Welcome back</h1>
-            <p className="text-muted-foreground">
+        <div className="w-full max-w-sm">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-foreground rounded-xl mb-4 shadow-lg">
+              <svg
+                className="w-7 h-7 text-background"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight mb-3 text-foreground">
+              Welcome back
+            </h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">
               Sign in to your account to continue your journey with Dataprism
             </p>
           </div>
+
           <div className="space-y-6">
             {/* Social Login Buttons */}
             <div className="space-y-3">
-              <Button variant="outline" className="w-full">
-                <GitBranch className="w-4 h-4" />
+              <Button
+                variant="outline"
+                className="w-full h-11 text-sm font-medium bg-background hover:bg-muted border-border text-foreground hover:text-foreground transition-all duration-300 shadow-sm hover:shadow-md"
+              >
+                <GitBranch className="w-4 h-4 mr-3" />
                 <span>Sign in with GitHub</span>
               </Button>
-              <Button variant="outline" className="w-full">
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
+              <Button
+                variant="outline"
+                className="w-full h-11 text-sm font-medium bg-background hover:bg-muted border-border text-foreground hover:text-foreground transition-all duration-300 shadow-sm hover:shadow-md"
+              >
+                <svg className="w-4 h-4 mr-3" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -100,8 +124,8 @@ export default function SignInForm({
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border" />
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-card text-muted-foreground">
+              <div className="relative flex justify-center text-xs">
+                <span className="px-4 bg-background text-muted-foreground font-medium">
                   or continue with
                 </span>
               </div>
@@ -114,7 +138,7 @@ export default function SignInForm({
                 e.stopPropagation();
                 form.handleSubmit();
               }}
-              className="space-y-4"
+              className="space-y-5"
             >
               <div>
                 <form.Field name="email">
@@ -122,7 +146,7 @@ export default function SignInForm({
                     <div className="space-y-2">
                       <Label
                         htmlFor={field.name}
-                        className="text-sm font-medium"
+                        className="text-sm font-semibold text-foreground"
                       >
                         Email
                       </Label>
@@ -134,12 +158,12 @@ export default function SignInForm({
                         value={field.state.value}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        className="h-11"
+                        className="h-11 text-sm border-border focus:border-foreground focus:ring-foreground/20 transition-all duration-300"
                       />
                       {field.state.meta.errors.map((error) => (
                         <p
                           key={error?.message}
-                          className="text-sm text-destructive"
+                          className="text-xs text-destructive font-medium"
                         >
                           {error?.message}
                         </p>
@@ -156,13 +180,13 @@ export default function SignInForm({
                       <div className="flex items-center justify-between">
                         <Label
                           htmlFor={field.name}
-                          className="text-sm font-medium"
+                          className="text-sm font-semibold text-foreground"
                         >
                           Password
                         </Label>
                         <button
                           type="button"
-                          className="text-sm text-primary hover:text-primary/80"
+                          className="text-sm text-foreground hover:text-foreground/80 font-medium transition-colors duration-300"
                         >
                           Forgot password?
                         </button>
@@ -175,12 +199,12 @@ export default function SignInForm({
                         value={field.state.value}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        className="h-11"
+                        className="h-11 text-sm border-border focus:border-foreground focus:ring-foreground/20 transition-all duration-300"
                       />
                       {field.state.meta.errors.map((error) => (
                         <p
                           key={error?.message}
-                          className="text-sm text-destructive"
+                          className="text-xs text-destructive font-medium"
                         >
                           {error?.message}
                         </p>
@@ -194,7 +218,7 @@ export default function SignInForm({
                 {(state) => (
                   <Button
                     type="submit"
-                    className="w-full h-11 text-sm font-medium text-black"
+                    className="w-full h-11 text-sm font-semibold bg-foreground hover:bg-foreground/90 text-background shadow-lg hover:shadow-xl transition-all duration-300 mt-8"
                     disabled={!state.canSubmit || state.isSubmitting}
                   >
                     {state.isSubmitting ? "Signing in..." : "Sign in"}
@@ -204,9 +228,12 @@ export default function SignInForm({
             </form>
 
             {/* Magic Link Button */}
-            <Button variant="outline" className="w-full">
+            <Button
+              variant="outline"
+              className="w-full h-11 text-sm font-medium bg-background hover:bg-muted border-border text-foreground hover:text-foreground transition-all duration-300 shadow-sm hover:shadow-md"
+            >
               <svg
-                className="w-4 h-4"
+                className="w-4 h-4 mr-3"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -221,13 +248,15 @@ export default function SignInForm({
               Sign in with magic link
             </Button>
 
-            <div className="text-center">
+            <div className="text-center pt-4">
               <button
                 onClick={onSwitchToSignUp}
-                className="text-sm text-primary hover:text-primary/80"
+                className="text-sm text-muted-foreground hover:text-foreground font-medium transition-colors duration-300"
               >
                 Don't have an account?{" "}
-                <span className="font-medium">Sign up</span>
+                <span className="font-semibold text-foreground hover:text-foreground/80 underline underline-offset-2">
+                  Sign up
+                </span>
               </button>
             </div>
           </div>
