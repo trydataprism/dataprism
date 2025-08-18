@@ -77,14 +77,14 @@ export default function SignInForm({
             <div className="space-y-3 mb-6">
               <Button
                 variant="outline"
-                className="w-full h-11 text-sm font-medium relative group"
+                className="w-full h-11 text-sm font-medium relative group cursor-pointer"
               >
                 <Github className="w-4 h-4 mr-3" />
                 <span>Sign in with GitHub</span>
               </Button>
               <Button
                 variant="outline"
-                className="w-full h-11 text-sm font-medium"
+                className="w-full h-11 text-sm font-medium cursor-pointer"
               >
                 <svg className="w-4 h-4 mr-3" viewBox="0 0 24 24">
                   <path
@@ -175,7 +175,7 @@ export default function SignInForm({
                         </Label>
                         <button
                           type="button"
-                          className="text-sm text-gray-500 hover:text-gray-400 font-medium transition-colors"
+                          className="text-sm text-gray-500 hover:text-gray-400 font-medium transition-colors cursor-pointer"
                         >
                           Forgot password?
                         </button>
@@ -194,7 +194,7 @@ export default function SignInForm({
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                         >
                           {showPassword ? (
                             <EyeOff className="w-4 h-4" />
@@ -233,8 +233,8 @@ export default function SignInForm({
           {/* Sign Up Link */}
           <div className="text-center mt-6">
             <button
-              onClick={onSwitchToSignUp}
-              className="text-sm text-muted-foreground hover:text-foreground font-medium transition-colors"
+              onClick={() => router.push("/sign-up")}
+              className="text-sm text-muted-foreground hover:text-foreground font-medium transition-colors cursor-pointer"
             >
               Don't have an account?{" "}
               <span className="font-semibold text-gray-500 hover:text-gray-600 underline underline-offset-2">

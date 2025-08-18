@@ -80,14 +80,14 @@ export default function SignUpForm({
             <div className="space-y-3 mb-6">
               <Button
                 variant="outline"
-                className="w-full h-11 text-sm font-medium"
+                className="w-full h-11 text-sm font-medium cursor-pointer"
               >
                 <Github className="w-4 h-4 mr-3" />
                 <span>Sign up with GitHub</span>
               </Button>
               <Button
                 variant="outline"
-                className="w-full h-11 text-sm font-medium"
+                className="w-full h-11 text-sm font-medium cursor-pointer"
               >
                 <svg className="w-4 h-4 mr-3" viewBox="0 0 24 24">
                   <path
@@ -221,7 +221,7 @@ export default function SignUpForm({
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                         >
                           {showPassword ? (
                             <EyeOff className="w-4 h-4" />
@@ -262,8 +262,8 @@ export default function SignUpForm({
           {/* Sign In Link */}
           <div className="text-center mt-6">
             <button
-              onClick={onSwitchToSignIn}
-              className="text-sm text-muted-foreground hover:text-foreground font-medium transition-colors"
+              onClick={() => router.push("/sign-in")}
+              className="text-sm text-muted-foreground hover:text-foreground font-medium transition-colors cursor-pointer"
             >
               Already have an account?{" "}
               <span className="font-semibold text-gray-500 hover:text-gray-600 underline underline-offset-2">
