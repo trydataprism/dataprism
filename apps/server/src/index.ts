@@ -1,32 +1,31 @@
 import "dotenv/config";
-import { auth } from "./lib/auth";
-import { appRouter } from "./routers";
+import { authRouter } from "./routers/auth";
+import { tracking } from "./routers/tracking";
 import { Hono } from "hono";
-import { cors } from "hono/cors";
-import { logger } from "hono/logger";
-import { serveStatic } from "hono/bun";
+import {
+  corsMiddleware,
+  loggerMiddleware,
+  errorMiddleware,
+  generalRateLimit,
+} from "./lib/middleware";
 
 const app = new Hono();
 
-app.use(logger());
-app.use(
-  "/*",
-  cors({
-    origin: process.env.CORS_ORIGIN || "",
-    allowMethods: ["GET", "POST", "OPTIONS"],
-    allowHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+// Apply global middleware - CORS must come first
+app.use("*", corsMiddleware);
+app.use("*", loggerMiddleware);
+app.use("*", errorMiddleware);
 
-app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
+// Apply general rate limiting to all non-auth routes
+app.use("/api/*", generalRateLimit);
 
-// Mount API routes
-app.route('/api', appRouter);
+// Mount auth router with specific rate limiting
+app.route("/api/auth", authRouter);
 
-// Serve static files from public folder
-app.get('/tracker.js', serveStatic({ path: './public/tracker.js' }));
-app.get('/test.html', serveStatic({ path: './public/test.html' }));
+// Mount tracking routes
+app.route("/api/track", tracking);
+
+// Static file serving will be handled separately if needed
 
 app.get("/", (c) => {
   return c.text("OK");

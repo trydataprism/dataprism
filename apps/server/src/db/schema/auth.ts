@@ -58,6 +58,9 @@ export const session = pgTable(
     createdAt: timestamp("created_at", { mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   },
   (table) => [
     uniqueIndex("sessions_token_unique").on(table.token),
@@ -75,15 +78,21 @@ export const account = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
+    password: text("password"), // Added for Better Auth compatibility
     accessToken: text("access_token"),
     refreshToken: text("refresh_token"),
+    idToken: text("id_token"), // Required for social login providers
     accessTokenExpiresAt: timestamp("access_token_expires_at", {
       mode: "string",
     }),
     refreshTokenExpiresAt: timestamp("refresh_token_expires_at", {
       mode: "string",
     }),
+    scope: text("scope"), // Better Auth required field
     createdAt: timestamp("created_at", { mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
   },
@@ -100,9 +109,11 @@ export const verification = pgTable(
   "verification",
   {
     id: text("id").primaryKey().notNull(),
-    email: text("email").notNull(),
-    code: text("code").notNull(),
-    type: verificationType("type").notNull(),
+    identifier: text("identifier").notNull(), // Added for Better Auth compatibility
+    value: text("value").notNull(), // Better Auth required field
+    email: text("email"), // Optional for social login
+    code: text("code"), // Optional for social login
+    type: verificationType("type").default("EMAIL_VERIFICATION").notNull(),
     status: verificationStatus("status").default("PENDING").notNull(),
     attempts: integer("attempts").default(0).notNull(),
     expiresAt: timestamp("expires_at", { mode: "string" }).notNull(),
@@ -110,9 +121,13 @@ export const verification = pgTable(
     createdAt: timestamp("created_at", { mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   },
   (table) => [
     index("verifications_email_idx").on(table.email),
+    index("verifications_identifier_idx").on(table.identifier),
     index("verifications_code_idx").on(table.code),
     index("verifications_expires_at_idx").on(table.expiresAt),
     index("verifications_type_status_idx").on(table.type, table.status),

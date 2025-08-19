@@ -14,7 +14,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
-import { AuthLayout, FormField, EmailInput, PasswordInput, SocialLogin } from "@/components/auth";
+import {
+  AuthLayout,
+  FormField,
+  EmailInput,
+  PasswordInput,
+  SocialLogin,
+} from "@/components/auth";
 
 export default function SignUpForm({
   onSwitchToSignIn,
@@ -36,7 +42,7 @@ export default function SignUpForm({
       if (value.password !== value.confirmPassword) {
         return;
       }
-      
+
       await authClient.signUp.email(
         {
           email: value.email,
@@ -44,9 +50,10 @@ export default function SignUpForm({
           name: value.email.split("@")[0],
         },
         {
-          onSuccess: () => {
-            router.push("/dashboard");
-            toast.success("Sign up successful");
+          onSuccess: (data) => {
+            console.log("Sign up success:", data);
+            router.push("/sign-in");
+            toast.success("Account created! Please check your email for verification link.");
           },
           onError: (error) => {
             toast.error(error.error.message || error.error.statusText);
@@ -55,21 +62,20 @@ export default function SignUpForm({
       );
     },
     validators: {
-      onSubmit: z
-        .object({
-          email: z.email("Invalid email address"),
-          password: z.string()
-            .min(8, "Password must be at least 8 characters")
-            .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Password must contain at least one uppercase letter, lowercase letter, and number"),
-          confirmPassword: z.string(),
-          referral: z.string().min(1, "Please select how you heard about us"),
-        }),
+      onSubmit: z.object({
+        email: z.email("Invalid email address"),
+        password: z
+          .string()
+          .min(8, "Password must be at least 8 characters")
+          .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+            "Password must contain at least one uppercase letter, lowercase letter, and number"
+          ),
+        confirmPassword: z.string(),
+        referral: z.string().min(1, "Please select how you heard about us"),
+      }),
     },
   });
-
-  if (isPending) {
-    return <Loader />;
-  }
 
   return (
     <AuthLayout
@@ -140,12 +146,13 @@ export default function SignUpForm({
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               {/* Real-time password matching validation */}
-              {field.state.value && form.getFieldValue("password") && 
-               field.state.value !== form.getFieldValue("password") && (
-                <p className="text-xs text-destructive font-medium">
-                  Passwords don't match
-                </p>
-              )}
+              {field.state.value &&
+                form.getFieldValue("password") &&
+                field.state.value !== form.getFieldValue("password") && (
+                  <p className="text-xs text-destructive font-medium">
+                    Passwords don't match
+                  </p>
+                )}
             </FormField>
           )}
         </form.Field>
@@ -164,19 +171,13 @@ export default function SignUpForm({
                   <SelectValue placeholder="Select an option" />
                 </SelectTrigger>
                 <SelectContent className="border-0">
-                  <SelectItem value="search-engine">
-                    Search Engine
-                  </SelectItem>
-                  <SelectItem value="social-media">
-                    Social Media
-                  </SelectItem>
+                  <SelectItem value="search-engine">Search Engine</SelectItem>
+                  <SelectItem value="social-media">Social Media</SelectItem>
                   <SelectItem value="friend-referral">
                     Friend Referral
                   </SelectItem>
                   <SelectItem value="youtube">YouTube</SelectItem>
-                  <SelectItem value="online-ad">
-                    Advertisement
-                  </SelectItem>
+                  <SelectItem value="online-ad">Advertisement</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
@@ -186,19 +187,23 @@ export default function SignUpForm({
 
         <form.Subscribe>
           {(state) => {
-            const passwordsMatch = state.values.password === state.values.confirmPassword;
-            const isDisabled = !state.canSubmit || state.isSubmitting || 
-              (state.values.password && state.values.confirmPassword && !passwordsMatch) || false;
-            
+            const passwordsMatch =
+              state.values.password === state.values.confirmPassword;
+            const isDisabled =
+              !state.canSubmit ||
+              state.isSubmitting ||
+              (state.values.password &&
+                state.values.confirmPassword &&
+                !passwordsMatch) ||
+              false;
+
             return (
               <Button
                 type="submit"
                 className="w-full h-10 text-sm font-medium bg-gradient-to-b from-white via-gray-100 to-gray-200 hover:from-gray-100 hover:via-gray-200 hover:to-gray-300 text-gray-900 cursor-pointer transition-colors duration-200 shadow-sm mt-2"
                 disabled={isDisabled}
               >
-                {state.isSubmitting
-                  ? "Creating account..."
-                  : "Create account"}
+                {state.isSubmitting ? "Creating account..." : "Create account"}
               </Button>
             );
           }}

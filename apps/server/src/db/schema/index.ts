@@ -23,11 +23,6 @@ import {
 } from "./reference";
 import { alerts, notifications } from "./notifications";
 import { errorLogs, realTimeVisitors } from "./monitoring";
-import {
-  conversionPaths,
-  cohortAnalysis,
-  retentionStats,
-} from "./intelligence";
 import { dataExports } from "./utility";
 
 // Export grouped table collections for easier imports
@@ -42,16 +37,6 @@ export const referenceDataTables = {
   locationData,
 };
 
-export const goalsTables = {
-  goals,
-  funnelDefinitions,
-  funnelGoals,
-};
-
-export const aiTables = {
-  aiTokens,
-  aiUsage,
-};
 
 export const notificationTables = {
   alerts,
@@ -63,11 +48,6 @@ export const monitoringTables = {
   realTimeVisitors,
 };
 
-export const intelligenceTables = {
-  conversionPaths,
-  cohortAnalysis,
-  retentionStats,
-};
 
 export const utilityTables = {
   dataExports,
@@ -90,13 +70,6 @@ export const allTables = {
   notifications,
   errorLogs,
   realTimeVisitors,
-
-  // Business Intelligence
-  conversionPaths,
-  cohortAnalysis,
-  retentionStats,
-
-  // Utility
   dataExports,
 };
 

@@ -7,7 +7,13 @@ import z from "zod";
 import Loader from "@/components/loader";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { AuthLayout, FormField, EmailInput, PasswordInput, SocialLogin } from "@/components/auth";
+import {
+  AuthLayout,
+  FormField,
+  EmailInput,
+  PasswordInput,
+  SocialLogin,
+} from "@/components/auth";
 
 export default function SignInForm({
   onSwitchToSignUp,
@@ -42,16 +48,16 @@ export default function SignInForm({
     validators: {
       onSubmit: z.object({
         email: z.email("Invalid email address"),
-        password: z.string()
+        password: z
+          .string()
           .min(8, "Password must be at least 8 characters")
-          .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Password must contain at least one uppercase letter, lowercase letter, and number"),
+          .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+            "Password must contain at least one uppercase letter, lowercase letter, and number"
+          ),
       }),
     },
   });
-
-  if (isPending) {
-    return <Loader />;
-  }
 
   return (
     <AuthLayout
