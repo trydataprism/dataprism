@@ -1,6 +1,6 @@
 import { pgMaterializedView } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { pageViews, userSessions, events } from "./analytics";
+import { pageViews, events } from "./analytics";
 
 // Daily website statistics materialized view
 export const dailyWebsiteStats = pgMaterializedView("daily_website_stats").as((qb) =>
@@ -52,14 +52,14 @@ export const topReferrers = pgMaterializedView("top_referrers").as((qb) =>
   qb
     .select({
       websiteId: pageViews.websiteId,
-      referrerDomain: pageViews.referrerDomain,
+      referrer: pageViews.referrer,
       pageViews: sql<number>`COUNT(${pageViews.id})`.as("page_views"),
       uniqueVisitors: sql<number>`COUNT(DISTINCT ${pageViews.visitorId})`.as("unique_visitors"),
       sessions: sql<number>`COUNT(DISTINCT ${pageViews.sessionId})`.as("sessions"),
     })
     .from(pageViews)
-    .where(sql`${pageViews.referrerDomain} IS NOT NULL AND ${pageViews.timestamp} >= NOW() - INTERVAL '30 days'`)
-    .groupBy(pageViews.websiteId, pageViews.referrerDomain)
+    .where(sql`${pageViews.referrer} IS NOT NULL AND ${pageViews.timestamp} >= NOW() - INTERVAL '30 days'`)
+    .groupBy(pageViews.websiteId, pageViews.referrer)
     .orderBy(sql`COUNT(${pageViews.id}) DESC`)
 );
 
@@ -86,16 +86,13 @@ export const geoStats = pgMaterializedView("geo_stats").as((qb) =>
     .select({
       websiteId: pageViews.websiteId,
       country: pageViews.country,
-      countryCode: pageViews.countryCode,
-      region: pageViews.region,
-      city: pageViews.city,
       pageViews: sql<number>`COUNT(${pageViews.id})`.as("page_views"),
       uniqueVisitors: sql<number>`COUNT(DISTINCT ${pageViews.visitorId})`.as("unique_visitors"),
       sessions: sql<number>`COUNT(DISTINCT ${pageViews.sessionId})`.as("sessions"),
     })
     .from(pageViews)
     .where(sql`${pageViews.timestamp} >= NOW() - INTERVAL '30 days'`)
-    .groupBy(pageViews.websiteId, pageViews.country, pageViews.countryCode, pageViews.region, pageViews.city)
+    .groupBy(pageViews.websiteId, pageViews.country)
 );
 
 // Event statistics materialized view
@@ -105,15 +102,12 @@ export const eventStats = pgMaterializedView("event_stats").as((qb) =>
       websiteId: events.websiteId,
       eventType: events.eventType,
       eventName: events.eventName,
-      eventCategory: events.eventCategory,
       eventCount: sql<number>`COUNT(${events.id})`.as("event_count"),
       uniqueVisitors: sql<number>`COUNT(DISTINCT ${events.visitorId})`.as("unique_visitors"),
-      totalValue: sql<number>`SUM(${events.value})`.as("total_value"),
-      avgValue: sql<number>`ROUND(AVG(${events.value}), 2)`.as("avg_value"),
     })
     .from(events)
     .where(sql`${events.timestamp} >= NOW() - INTERVAL '30 days'`)
-    .groupBy(events.websiteId, events.eventType, events.eventName, events.eventCategory)
+    .groupBy(events.websiteId, events.eventType, events.eventName)
 );
 
 // Export all materialized views
