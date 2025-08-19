@@ -188,7 +188,7 @@ export default function SignUpForm({
           {(state) => {
             const passwordsMatch = state.values.password === state.values.confirmPassword;
             const isDisabled = !state.canSubmit || state.isSubmitting || 
-              (state.values.password && state.values.confirmPassword && !passwordsMatch);
+              (state.values.password && state.values.confirmPassword && !passwordsMatch) || false;
             
             return (
               <Button

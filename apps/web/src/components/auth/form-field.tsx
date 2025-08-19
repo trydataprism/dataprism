@@ -6,7 +6,7 @@ interface FormFieldProps {
   htmlFor?: string;
   required?: boolean;
   children: ReactNode;
-  errors?: Array<{ message?: string }>;
+  errors?: any;
 }
 
 export function FormField({ label, htmlFor, required, children, errors }: FormFieldProps) {
@@ -27,12 +27,12 @@ export function FormField({ label, htmlFor, required, children, errors }: FormFi
         </div>
       )}
       {children}
-      {errors?.map((error) => (
+      {errors && Array.isArray(errors) && errors.length > 0 && errors.map((error, index) => (
         <p
-          key={error?.message}
+          key={index}
           className="text-xs text-destructive font-medium"
         >
-          {error?.message}
+          {typeof error === 'string' ? error : error?.message || 'Invalid input'}
         </p>
       ))}
     </div>

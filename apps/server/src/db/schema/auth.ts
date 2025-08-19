@@ -29,6 +29,8 @@ export const user = pgTable(
     email: text("email").notNull(),
     emailVerified: boolean("email_verified").notNull().default(false),
     image: text("image"),
+    newsletter: boolean("newsletter").notNull().default(false),
+    referralSource: text("referral_source"),
     createdAt: timestamp("created_at", { mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
