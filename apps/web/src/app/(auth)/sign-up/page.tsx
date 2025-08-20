@@ -53,7 +53,9 @@ export default function SignUpForm({
           onSuccess: (data) => {
             console.log("Sign up success:", data);
             router.push("/sign-in");
-            toast.success("Account created! Please check your email for verification link.");
+            toast.success(
+              "Account created! Please check your email for verification link."
+            );
           },
           onError: (error) => {
             toast.error(error.error.message || error.error.statusText);
@@ -133,7 +135,7 @@ export default function SignUpForm({
         <form.Field name="confirmPassword">
           {(field) => (
             <FormField
-              label="Password Again"
+              label="Confirm Password"
               htmlFor={field.name}
               errors={field.state.meta.errors}
             >
