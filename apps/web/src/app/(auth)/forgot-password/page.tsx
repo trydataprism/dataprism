@@ -20,9 +20,8 @@ export default function ForgotPasswordPage() {
     },
     onSubmit: async ({ value }) => {
       try {
-        await authClient.forgetPassword({
+        await authClient.forgetPassword.emailOtp({
           email: value.email,
-          redirectTo: "/enter-code",
         });
         setIsSubmitted(true);
         // Store email securely in session storage instead of URL

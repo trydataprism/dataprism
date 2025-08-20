@@ -5,14 +5,13 @@ import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import z from "zod";
 import { Button } from "@/components/ui/button";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { AuthLayout, FormField, PasswordInput, VerificationCodeInput } from "@/components/auth";
 
 export default function EnterCodePage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   // Get email from session storage instead of URL parameters
   const [email, setEmail] = useState<string | null>(null);
   
@@ -42,10 +41,27 @@ export default function EnterCodePage() {
     },
     onSubmit: async ({ value }) => {
       try {
-        await authClient.resetPassword({
-          newPassword: value.newPassword,
-          token: value.code,
+        if (!email) {
+          toast.error("Email not found. Please restart the process.");
+          router.push("/forgot-password");
+          return;
+        }
+        
+        // Reset password with OTP verification
+        const resetResult = await authClient.emailOtp.resetPassword({
+          email: email,
+          otp: value.code,
+          password: value.newPassword,
         });
+        
+        if (resetResult.error) {
+          if (resetResult.error.message?.includes("invalid") || resetResult.error.message?.includes("expired") || resetResult.error.message?.includes("OTP")) {
+            toast.error("The verification code is incorrect or has expired. Please check your email and try again.");
+          } else {
+            toast.error("Unable to reset password. Please try again or contact support.");
+          }
+          return;
+        }
         // Clear stored email after successful reset
         sessionStorage.removeItem('reset_email');
         toast.success("Password reset successful");
@@ -57,7 +73,7 @@ export default function EnterCodePage() {
     validators: {
       onSubmit: z
         .object({
-          code: z.string().min(1, "Verification code is required"),
+          code: z.string().min(6, "Verification code must be 6 digits").max(6, "Verification code must be 6 digits").regex(/^\d+$/, "Verification code must contain only numbers"),
           newPassword: z.string()
             .min(8, "Password must be at least 8 characters")
             .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Password must contain at least one uppercase letter, lowercase letter, and number"),
@@ -74,9 +90,8 @@ export default function EnterCodePage() {
     if (!email || resendCooldown > 0) return;
     
     try {
-      await authClient.forgetPassword({
+      await authClient.forgetPassword.emailOtp({
         email: email,
-        redirectTo: "/enter-code",
       });
       // Update session storage when resending
       sessionStorage.setItem('reset_email', btoa(email));

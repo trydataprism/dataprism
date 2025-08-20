@@ -1,4 +1,5 @@
 import { createAuthClient } from "better-auth/react";
+import { emailOTPClient } from "better-auth/client/plugins";
 
 /**
  * Better Auth client configuration for frontend
@@ -9,7 +10,7 @@ export const authClient = createAuthClient({
   basePath: "/api/auth",
 
   // Plugin configurations
-  plugins: [],
+  plugins: [emailOTPClient()],
 });
 
 export const { signIn, signUp, signOut, useSession } = authClient;
