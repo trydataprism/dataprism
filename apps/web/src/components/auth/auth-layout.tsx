@@ -1,6 +1,8 @@
 import Silk from "@/components/ui/silk-gradient";
 import Image from "next/image";
+import Link from "next/link";
 import { ReactNode } from "react";
+import { motion } from "framer-motion";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -23,29 +25,49 @@ export function AuthLayout({
     <div className="min-h-screen flex">
       {/* Left Side - Form Card */}
       <div className="w-full lg:flex-1 flex items-center justify-center bg-background relative">
-        <div className="w-full max-w-sm">
+        <motion.div 
+          className="w-full max-w-sm"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
           {/* Back Button */}
           {backButton && (
-            <div className="mb-6">
+            <motion.div 
+              className="mb-6"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            >
               {backButton}
-            </div>
+            </motion.div>
           )}
           
           {/* Header */}
-          <div className="text-start mb-5">
+          <motion.div 
+            className="text-start mb-5"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+          >
             <h1 className="text-3xl font-semibold text-foreground mb-2">
               {title}
             </h1>
             <p className="text-muted-foreground text-sm">
               {subtitle}
             </p>
-          </div>
+          </motion.div>
           
           {/* Form Content */}
-          <div className="shadow-lg">
+          <motion.div 
+            className="shadow-lg"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+          >
             {children}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* Right Side - Silk Gradient */}
@@ -59,10 +81,10 @@ export function AuthLayout({
         />
 
         {/* Logo and Brand */}
-        <div className="absolute top-6 right-6 flex items-center gap-3">
+        <Link href="/" className="absolute top-6 right-6 flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity duration-200">
           <Image src="/dark_logo.svg" alt="Dataprism" width={24} height={24} />
           <h1 className="text-2xl font-bold text-white">DATAPRISM</h1>
-        </div>
+        </Link>
 
         {/* Right side text */}
         <div className="absolute bottom-12 left-12 text-white">
