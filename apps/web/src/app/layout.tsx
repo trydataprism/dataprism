@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
-import { Montserrat, Geist_Mono } from "next/font/google";
 import "../index.css";
 import Providers from "@/components/providers";
-import Header from "@/components/header";
+import { Poppins } from "next/font/google";
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -26,9 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${montserrat.variable} ${geistMono.variable} antialiased font-sans`}
-      >
+      <body className={`${poppins.className} antialiased`}>
         <Providers>
           <div className="grid grid-rows-[auto_1fr] h-svh">
             {/* <Header /> */}
