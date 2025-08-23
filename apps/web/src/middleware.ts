@@ -3,26 +3,39 @@ import { NextRequest, NextResponse } from "next/server";
 // Protected routes that require authentication
 const protectedRoutes = ["/dashboard"];
 
-// Public routes that don't require authentication
+// Public routes that don't require authentication  
 const publicRoutes = ["/", "/sign-in", "/sign-up"];
 
-export function middleware(request: NextRequest) {
+// Better Auth cookie names to check
+const AUTH_COOKIES = [
+  "better-auth.session_token",
+  "better-auth.session",
+  "better-auth.session_data"
+];
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-  const isPublicRoute = publicRoutes.includes(pathname);
 
-  // Check for authentication cookie
-  const authCookie = request.cookies.get("better-auth.session_data");
-  const isAuthenticated = !!authCookie?.value;
-
-  // Redirect unauthenticated users from protected routes to sign-in
-  if (isProtectedRoute && !isAuthenticated) {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+  // Skip auth check for public routes
+  if (publicRoutes.includes(pathname)) {
+    return NextResponse.next();
   }
 
-  // Redirect authenticated users from auth pages to dashboard
-  if ((pathname === "/sign-in" || pathname === "/sign-up") && isAuthenticated) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  // For protected routes, check auth cookies
+  if (isProtectedRoute) {
+    // Check if any auth cookie exists
+    const hasAuthCookie = AUTH_COOKIES.some(cookieName => {
+      const cookie = request.cookies.get(cookieName);
+      return cookie && cookie.value && cookie.value.length > 10; // Basic validation
+    });
+
+    if (!hasAuthCookie) {
+      return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
+
+    // Let the client-side auth provider handle detailed session validation
+    return NextResponse.next();
   }
 
   return NextResponse.next();
