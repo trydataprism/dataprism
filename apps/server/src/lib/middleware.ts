@@ -1,5 +1,6 @@
 import type { Context, Next } from "hono";
 import { rateLimiter } from "hono-rate-limiter";
+import { RATE_LIMITS, CORS_CONFIG } from "../constants";
 
 /**
  * Rate limiting middleware factory
@@ -25,66 +26,38 @@ export function createRateLimit(options: {
 
 /**
  * Strict rate limiting for authentication endpoints
- * 5 requests per minute per IP to prevent brute force attacks (production)
- * 50 requests per minute in development
  */
-export const authRateLimit = createRateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: process.env.NODE_ENV === "development" ? 50 : 5,
-  message: "Too many authentication attempts, please try again in a minute.",
-});
+export const authRateLimit = createRateLimit(RATE_LIMITS.AUTH);
 
 /**
  * Moderate rate limiting for password reset endpoints
- * 3 requests per 5 minutes per IP
  */
-export const passwordResetRateLimit = createRateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 3,
-  message: "Too many password reset requests, please try again in 5 minutes.",
-});
+export const passwordResetRateLimit = createRateLimit(RATE_LIMITS.PASSWORD_RESET);
 
 /**
  * General API rate limiting
- * 100 requests per minute per IP for general endpoints (production)
- * 1000 requests per minute in development
  */
-export const generalRateLimit = createRateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: process.env.NODE_ENV === "development" ? 1000 : 100,
-  message: "Too many requests, please slow down.",
-});
+export const generalRateLimit = createRateLimit(RATE_LIMITS.GENERAL);
 
 /**
  * Email verification rate limiting
- * 3 requests per 10 minutes per IP
  */
-export const emailVerificationRateLimit = createRateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 3,
-  message: "Too many email verification attempts, please try again in 10 minutes.",
-});
+export const emailVerificationRateLimit = createRateLimit(RATE_LIMITS.EMAIL_VERIFICATION);
 
 /**
  * CORS middleware with security headers
  */
 export const corsMiddleware = async (c: Context, next: Next) => {
   const origin = c.req.header("origin");
-  const allowedOrigins = [
-    process.env.CORS_ORIGIN || "http://localhost:3001",
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:5173", // Vite default
-  ];
 
   // Always set CORS headers for preflight requests
-  c.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
-  c.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
-  c.header("Access-Control-Allow-Credentials", "true");
-  c.header("Access-Control-Max-Age", "86400");
+  c.header("Access-Control-Allow-Methods", CORS_CONFIG.allowedMethods);
+  c.header("Access-Control-Allow-Headers", CORS_CONFIG.allowedHeaders);
+  c.header("Access-Control-Allow-Credentials", CORS_CONFIG.credentials.toString());
+  c.header("Access-Control-Max-Age", CORS_CONFIG.maxAge.toString());
 
   // Set Access-Control-Allow-Origin header
-  if (origin && allowedOrigins.includes(origin)) {
+  if (origin && CORS_CONFIG.allowedOrigins.includes(origin)) {
     c.header("Access-Control-Allow-Origin", origin);
   } else if (!origin) {
     // For requests with no origin (like direct browser navigation), allow

@@ -39,20 +39,33 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Backend (apps/server):**
 - Hono framework for API routes
-- Better Auth for authentication with email/password
+- Better Auth for authentication with email/password and OAuth (Google, GitHub)
+- Email OTP verification with Resend integration
 - Drizzle ORM with PostgreSQL database
 - CORS configured for cross-origin requests
-- Database schema located in `src/db/schema/auth.ts`
+- Comprehensive database schema across multiple files
 
 **Authentication Flow:**
 - Better Auth handles authentication on both client and server
 - Server exposes auth routes at `/api/auth/**`
 - Client uses Better Auth React hooks for auth state management
-- Database schema includes users, sessions, accounts, and verification tables
+- Multi-provider support: Email/password, Google OAuth, GitHub OAuth
+- Email verification with OTP using Resend for email delivery
+- Password reset functionality with secure token-based flow
+- Session management with 7-day expiration and CSRF protection
+- Database schema includes users, sessions, accounts, and verification tables with proper indexing
 
 **Database Configuration:**
 - PostgreSQL with Drizzle ORM
-- Schema files in `apps/server/src/db/schema/`
+- Schema files in `apps/server/src/db/schema/`:
+  - `auth.ts` - User authentication (users, sessions, accounts, verification)
+  - `team.ts` - Team management and collaboration
+  - `website.ts` - Website tracking and management
+  - `analytics.ts` - Analytics and tracking data
+  - `notifications.ts` - Notification system
+  - `monitoring.ts` - System monitoring
+  - `materialized-views.ts` - Performance optimization views
+  - Additional schemas for billing, goals, AI, intelligence, reference, and utility
 - Migrations in `apps/server/src/db/migrations/`
 - Database configuration in `apps/server/drizzle.config.ts`
 
@@ -71,3 +84,10 @@ Ensure PostgreSQL is running and configured. Update `apps/server/.env` with:
 - `CORS_ORIGIN` - Allowed origins for CORS
 
 After environment setup, run `bun db:push` to apply the database schema.
+
+**Additional Environment Variables:**
+- `RESEND_API_KEY` - For email delivery (verification, password reset)
+- `FROM_EMAIL` - Sender email address (defaults to hello@dataprism.app)
+- `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET` - For Google OAuth
+- `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET` - For GitHub OAuth
+- `NEXT_PUBLIC_API_URL` - Frontend API endpoint (defaults to http://localhost:3000)
