@@ -15,19 +15,27 @@ import {
 } from "@/components/ui/dialog";
 
 const websiteSchema = z.object({
-  projectName: z.string()
+  projectName: z
+    .string()
     .min(3, "Project name must be at least 3 characters")
     .max(50, "Project name must be less than 50 characters"),
-  domain: z.string()
+  domain: z
+    .string()
     .min(1, "Domain is required")
-    .refine((val) => val.includes('.'), "Domain must contain a dot (e.g., example.com)")
+    .refine(
+      (val) => val.includes("."),
+      "Domain must contain a dot (e.g., example.com)"
+    ),
 });
 
 export function AddNewButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [domain, setDomain] = useState("");
-  const [errors, setErrors] = useState<{ projectName?: string[]; domain?: string[] }>({});
+  const [errors, setErrors] = useState<{
+    projectName?: string[];
+    domain?: string[];
+  }>({});
 
   const validateForm = () => {
     try {
@@ -39,9 +47,9 @@ export function AddNewButton() {
         const formErrors: { projectName?: string[]; domain?: string[] } = {};
         error.issues.forEach((err) => {
           const fieldName = err.path[0] as string;
-          if (fieldName === 'projectName' && !formErrors.projectName) {
+          if (fieldName === "projectName" && !formErrors.projectName) {
             formErrors.projectName = [err.message];
-          } else if (fieldName === 'domain' && !formErrors.domain) {
+          } else if (fieldName === "domain" && !formErrors.domain) {
             formErrors.domain = [err.message];
           }
         });
@@ -67,11 +75,11 @@ export function AddNewButton() {
   return (
     <>
       <Button
-        className="bg-white hover:bg-white/90 border border-input text-black/80 shadow-xs h-8"
+        className="bg-white hover:bg-white/90 border border-input text-black/80 shadow-xs h-8 cursor-pointer"
         onClick={() => setIsOpen(true)}
       >
         <Plus className="h-4 w-4" />
-        Add New
+        Create Website
       </Button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -96,11 +104,7 @@ export function AddNewButton() {
               />
             </FormField>
 
-            <FormField
-              label="Domain"
-              htmlFor="domain"
-              errors={errors.domain}
-            >
+            <FormField label="Domain" htmlFor="domain" errors={errors.domain}>
               <div className="flex items-stretch">
                 <span className="inline-flex items-center px-3 text-sm text-muted-foreground bg-muted/60 rounded-l-md select-none border-r border-border/50">
                   https://
@@ -117,10 +121,7 @@ export function AddNewButton() {
           </div>
 
           <div className="flex justify-end">
-            <Button
-              className="cursor-pointer"
-              onClick={handleSubmit}
-            >
+            <Button className="cursor-pointer" onClick={handleSubmit}>
               Create Website
             </Button>
           </div>
