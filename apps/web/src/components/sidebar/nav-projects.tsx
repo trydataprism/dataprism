@@ -18,8 +18,8 @@ export function NavProjects({
   }[];
 }) {
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Projects</SidebarGroupLabel>
+    <SidebarGroup className="group-data-[collapsible=icon]:hidden mt-[-10px]">
+      <SidebarGroupLabel>Resources</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>

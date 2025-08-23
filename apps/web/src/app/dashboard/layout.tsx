@@ -1,15 +1,6 @@
-"use client";
-
 import { Poppins } from "next/font/google";
 import { AppSidebar } from "@/components/sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { BreadcrumbWrapper } from "@/components/breadcrumb-wrapper";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 const poppins = Poppins({
@@ -30,24 +21,12 @@ export default function DashboardLayout({
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2">
             <div className="flex items-center gap-2 px-4">
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">logo</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>All Websites</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+              <BreadcrumbWrapper />
             </div>
           </header>
-          {children}
+          <div className="flex flex-1 flex-col pt-0 bg-muted/25 rounded-xl border border-muted/60 mb-5 mr-5">
+            {children}
+          </div>
         </SidebarInset>
       </SidebarProvider>
     </div>

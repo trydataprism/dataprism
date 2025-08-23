@@ -3,15 +3,15 @@
 import * as React from "react";
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
+  Book,
+  Building2,
   Command,
-  Frame,
+  CreditCard,
   GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+  Globe,
+  MessageSquare,
+  Route,
+  Settings,
 } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
@@ -52,106 +52,41 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
+      title: "Websites",
+      url: "/dashboard",
+      icon: Globe,
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
+      title: "Organizations",
+      url: "/dashboard/organizations",
+      icon: Building2,
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
+      title: "Billing",
+      url: "/dashboard/billing",
+      icon: CreditCard,
     },
     {
       title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
+      url: "/dashboard/settings",
+      icon: Settings,
     },
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      name: "Docs",
+      url: "/",
+      icon: Book,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
+      name: "Roadmap",
+      url: "/",
+      icon: Route,
     },
     {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      name: "Feedback",
+      url: "/",
+      icon: MessageSquare,
     },
   ],
 };
