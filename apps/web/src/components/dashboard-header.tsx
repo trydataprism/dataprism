@@ -4,11 +4,16 @@ import { Input } from "@/components/ui/input";
 import { Search, Webhook } from "lucide-react";
 import { AddNewButton } from "@/components/add-new-button";
 import { ViewModeToggle } from "@/components/view-mode-toggle";
-import { useState } from "react";
 
-export function DashboardHeader() {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+interface DashboardHeaderProps {
+  viewMode: "grid" | "list";
+  onViewModeChange: (mode: "grid" | "list") => void;
+}
 
+export function DashboardHeader({
+  viewMode,
+  onViewModeChange,
+}: DashboardHeaderProps) {
   return (
     <div className="w-full rounded-t-xl p-3 border-b border-muted/60 shadow-sm bg-neutral-950">
       <div className="flex items-center justify-between">
@@ -32,7 +37,10 @@ export function DashboardHeader() {
             />
           </div>
 
-          <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+          <ViewModeToggle
+            viewMode={viewMode}
+            onViewModeChange={onViewModeChange}
+          />
 
           <AddNewButton />
         </div>
