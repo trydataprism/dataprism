@@ -47,13 +47,13 @@ export default function Home() {
 
       <div className="mb-6 flex gap-4 justify-start">
         <a
-          href="/api/auth/sign-in"
+          href="/sign-in"
           className="px-4 py-2 bg-white text-black border rounded-md hover:bg-gray-100 transition-colors"
         >
           Sign In
         </a>
         <a
-          href="/api/auth/sign-up"
+          href="/sign-up"
           className="px-4 py-2 bg-white text-black border rounded-md hover:bg-gray-100 transition-colors"
         >
           Sign Up
