@@ -6,11 +6,11 @@ const protectedRoutes = ["/dashboard"];
 // Public routes that don't require authentication  
 const publicRoutes = ["/", "/sign-in", "/sign-up"];
 
-// Better Auth cookie names to check
+// Better Auth actual cookie names
 const AUTH_COOKIES = [
-  "better-auth.session_token",
-  "better-auth.session",
-  "better-auth.session_data"
+  "better-auth.session_token", // Main session token
+  "session", // Fallback session cookie
+  "auth-session", // Alternative session cookie
 ];
 
 export async function middleware(request: NextRequest) {
@@ -24,17 +24,22 @@ export async function middleware(request: NextRequest) {
 
   // For protected routes, check auth cookies
   if (isProtectedRoute) {
-    // Check if any auth cookie exists
-    const hasAuthCookie = AUTH_COOKIES.some(cookieName => {
-      const cookie = request.cookies.get(cookieName);
-      return cookie && cookie.value && cookie.value.length > 10; // Basic validation
+    // Check for any cookie that starts with 'better-auth' or common session cookies
+    const allCookies = Array.from(request.cookies.getAll());
+    const hasAnyAuthCookie = allCookies.some(cookie => {
+      return (cookie.name.startsWith('better-auth') || 
+              cookie.name === 'session' || 
+              cookie.name === 'auth-session') && 
+             cookie.value && 
+             cookie.value.trim().length > 10;
     });
 
-    if (!hasAuthCookie) {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
+    if (!hasAnyAuthCookie) {
+      const signInUrl = new URL("/sign-in", request.url);
+      signInUrl.searchParams.set("from", pathname);
+      return NextResponse.redirect(signInUrl);
     }
 
-    // Let the client-side auth provider handle detailed session validation
     return NextResponse.next();
   }
 

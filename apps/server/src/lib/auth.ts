@@ -230,9 +230,16 @@ export const auth = betterAuth({
     }) => {
       try {
         // Redirect to frontend sign-in page after verification
-        const frontendUrl = `${process.env.CORS_ORIGIN || "http://localhost:3001"}/sign-in?verified=true`;
-        const verificationUrl = url.replace(/localhost:3000.*$/, `localhost:3000/api/auth/verify-email?token=${token}&callbackURL=${encodeURIComponent(frontendUrl)}`);
-        
+        const frontendUrl = `${
+          process.env.CORS_ORIGIN || "http://localhost:3001"
+        }/sign-in?verified=true`;
+        const verificationUrl = url.replace(
+          /localhost:3000.*$/,
+          `localhost:3000/api/auth/verify-email?token=${token}&callbackURL=${encodeURIComponent(
+            frontendUrl
+          )}`
+        );
+
         await resend.emails.send({
           from: process.env.FROM_EMAIL || "hello@dataprism.app",
           to: user.email,
@@ -314,6 +321,14 @@ export const auth = betterAuth({
     cookieCache: {
       enabled: true,
       maxAge: 60 * 5, // 5 minutes
+    },
+    // Enhanced cookie configuration for persistence
+    cookieOptions: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: "/",
     },
   },
 
