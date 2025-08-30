@@ -17,7 +17,10 @@
     "db:generate": "turbo -F server db:generate",
     "db:migrate": "turbo -F server db:migrate"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@radix-ui/react-label": "^2.1.7",
+    "framer-motion": "^12.23.12"
+  },
   "devDependencies": {
     "turbo": "^2.5.4"
   },

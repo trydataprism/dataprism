@@ -160,4 +160,11 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+  
+  --gradient-radial: radial-gradient(circle, var(--tw-gradient-stops));
 }
+
+.bg-gradient-radial {
+  background-image: var(--gradient-radial);
+}
+
