@@ -52,7 +52,7 @@ function SignInPage() {
               <div className="flex gap-3">
                 <Button
                   variant="outline"
-                  className="flex-1 h-10 border-0 cursor-pointer hover:!bg-white hover:!text-black transition-all duration-300 font-semibold"
+                  className="flex-1 h-10 border-0 cursor-pointer hover:!bg-white hover:!text-black transition-all duration-300 font-medium"
                 >
                   <svg className="mr-1 h-4 w-4" viewBox="0 0 24 24">
                     <path
@@ -76,7 +76,7 @@ function SignInPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="flex-1 h-10 border-0 cursor-pointer hover:!bg-white hover:!text-black transition-all duration-300 font-semibold"
+                  className="flex-1 h-10 border-0 cursor-pointer hover:!bg-white hover:!text-black transition-all duration-300 font-medium"
                 >
                   <Github className="mr-1 h-4 w-4" />
                   GitHub
