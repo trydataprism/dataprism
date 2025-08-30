@@ -1,10 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    esmExternals: true,
-  },
-  transpilePackages: ["better-auth"],
+  /* config options here */
 };
 
 export default nextConfig;
