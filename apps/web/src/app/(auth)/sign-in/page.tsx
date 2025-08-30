@@ -178,25 +178,29 @@ function SignInPage() {
         {/* Orta çizgi */}
         <div className="w-px bg-gradient-to-b from-transparent via-border to-transparent h-96 shadow-sm"></div>
 
-        {/* Sağ taraf - Yorumlar bölümü */}
+        {/* Sağ taraf - Dataprism Team */}
         <div className="flex-shrink-0">
           <div className="w-full max-w-md space-y-6">
             <div className="space-y-4">
               <p className="text-2xl leading-relaxed bg-gradient-to-r from-white from-70% to-gray-800 bg-clip-text text-transparent">
-                "Dataprism transformed how we understand our customers. The
-                insights are incredibly actionable."
+                "Discover hidden patterns in your web traffic analytics and optimize your strategy for growth."
               </p>
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-neutral-950 border border-border/30 rounded-md flex items-center justify-center">
-                  <span className="text-xs font-medium text-gray-300">JD</span>
+                <div className="w-7 h-7 bg-neutral-950 rounded-md flex items-center justify-center">
+                  <Image
+                    src="/dark_logo.svg"
+                    alt="Dataprism Logo"
+                    width={12}
+                    height={12}
+                  />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium text-foreground">
-                      John Doe
+                      Dataprism Team
                     </p>
                     <p className="text-xs text-muted-foreground/70">
-                      Founder of TechCorp
+                      Data Intelligence Platform
                     </p>
                   </div>
                 </div>
