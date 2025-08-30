@@ -47,8 +47,7 @@ function SignUpPage() {
         />
       </div>
       <div className="flex min-h-screen items-center justify-center gap-32">
-        {/* Sol taraf - Sign up formu */}
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md px-4 lg:px-0">
           <Card className="w-full border-0 bg-transparent">
             <CardHeader className="text-left">
               <CardTitle className="text-2xl font-bold">
@@ -247,10 +246,10 @@ function SignUpPage() {
         </div>
 
         {/* Orta çizgi */}
-        <div className="w-px bg-gradient-to-b from-transparent via-border to-transparent h-96 shadow-sm"></div>
+        <div className="hidden lg:block w-px bg-gradient-to-b from-transparent via-border to-transparent h-96 shadow-sm"></div>
 
         {/* Sağ taraf - Dataprism Team */}
-        <div className="flex-shrink-0">
+        <div className="hidden lg:block flex-shrink-0">
           <div className="w-full max-w-md space-y-6">
             <div className="space-y-4">
               <p className="text-2xl leading-relaxed bg-gradient-to-r from-white from-70% to-gray-800 bg-clip-text text-transparent">
