@@ -15,9 +15,15 @@ export const { signIn, signUp, signOut, useSession } = authClient;
 
 // Helper functions for social authentication
 export const signInWithGoogle = () =>
-  authClient.signIn.social({ provider: "google", callbackURL: "http://localhost:3001/dashboard" });
+  authClient.signIn.social({
+    provider: "google",
+    callbackURL: "http://localhost:3001/dashboard",
+  });
 export const signInWithGithub = () =>
-  authClient.signIn.social({ provider: "github", callbackURL: "http://localhost:3001/dashboard" });
+  authClient.signIn.social({
+    provider: "github",
+    callbackURL: "http://localhost:3001/dashboard",
+  });
 
 // Re-export types
 export type Session = typeof authClient.$Infer.Session;

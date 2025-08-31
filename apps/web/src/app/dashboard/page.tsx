@@ -11,18 +11,30 @@ function page() {
   }
 
   if (error) {
-    return <div className="p-8">Session error: {error.message}</div>;
+    return (
+      <div className="p-8">
+        <h2 className="text-xl font-bold text-red-600 mb-4">Session Error</h2>
+        <p className="text-red-500 mb-2">Error: {error.message}</p>
+      </div>
+    );
   }
 
   if (!session) {
-    return <div className="p-8">Not authenticated</div>;
+    return (
+      <div className="p-8">
+        <h2 className="text-xl font-bold text-yellow-600 mb-4">
+          Not Authenticated
+        </h2>
+        <p>Please sign in to access the dashboard.</p>
+      </div>
+    );
   }
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
-      <div className="text-white rounded-lg shadow p-6">
+      <div className="bg-black text-white rounded-lg shadow p-6">
         <h2 className="text-lg font-semibold mb-4">User Information</h2>
 
         <div className="space-y-3">

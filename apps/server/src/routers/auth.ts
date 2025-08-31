@@ -1,6 +1,11 @@
 import { Hono } from "hono";
 import { auth } from "../lib/auth";
-import { authRateLimit, passwordResetRateLimit, emailVerificationRateLimit, corsMiddleware } from "../lib/middleware";
+import {
+  authRateLimit,
+  passwordResetRateLimit,
+  emailVerificationRateLimit,
+  corsMiddleware,
+} from "../lib/middleware";
 
 /**
  * Authentication router with Better Auth integration
@@ -25,19 +30,19 @@ authRouter.use("/verify-email", emailVerificationRateLimit);
 authRouter.get("/callback/:provider", async (c) => {
   try {
     const response = await auth.handler(c.req.raw);
-    
+
     // OAuth callback sonrası her durumda frontend'e yönlendir
     const frontendUrl = `${process.env.CORS_ORIGIN || "http://localhost:3001"}/dashboard`;
-    
+
     // Response'dan cookie'leri kopyala ve frontend redirect ekle
     const newResponse = Response.redirect(frontendUrl, 302);
-    
+
     // Session cookie'lerini kopyala
-    const cookieHeader = response.headers.get('set-cookie');
+    const cookieHeader = response.headers.get("set-cookie");
     if (cookieHeader) {
-      newResponse.headers.set('set-cookie', cookieHeader);
+      newResponse.headers.set("set-cookie", cookieHeader);
     }
-    
+
     return newResponse;
   } catch (error) {
     console.error("OAuth callback error:", error);
@@ -52,24 +57,39 @@ authRouter.get("/callback/:provider", async (c) => {
 authRouter.all("*", async (c) => {
   try {
     const response = await auth.handler(c.req.raw);
-    
+
+    // Cookie'leri doğru şekilde kopyala
+    const setCookieHeader = response.headers.get("set-cookie");
+
     // Ensure CORS headers are present in response
     const newResponse = new Response(response.body, {
       status: response.status,
       statusText: response.statusText,
       headers: {
         ...Object.fromEntries(response.headers.entries()),
-        'Access-Control-Allow-Origin': 'http://localhost:3001',
-        'Access-Control-Allow-Credentials': 'true',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS, PATCH',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+        "Access-Control-Allow-Origin": "http://localhost:3001",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+        "Access-Control-Allow-Headers":
+          "Content-Type, Authorization, X-Requested-With",
+        "Access-Control-Expose-Headers": "Set-Cookie",
       },
     });
-    
+
+    // Cookie'leri doğru şekilde set et
+    if (setCookieHeader) {
+      // Multiple cookies için split ve join
+      const cookies = setCookieHeader.split(",").map((cookie) => cookie.trim());
+      cookies.forEach((cookie) => {
+        newResponse.headers.append("set-cookie", cookie);
+      });
+    }
+
     return newResponse;
   } catch (error) {
-    console.error('Auth handler error:', error);
-    return Response.json({ error: 'Internal server error' }, { status: 500 });
+    console.error("Auth handler error:", error);
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 });
 

@@ -231,8 +231,11 @@ export const auth = betterAuth({
       try {
         // Redirect to frontend sign-in page after verification
         const frontendUrl = `${process.env.CORS_ORIGIN || "http://localhost:3001"}/sign-in?verified=true`;
-        const verificationUrl = url.replace(/localhost:3000.*$/, `localhost:3000/api/auth/verify-email?token=${token}&callbackURL=${encodeURIComponent(frontendUrl)}`);
-        
+        const verificationUrl = url.replace(
+          /localhost:3000.*$/,
+          `localhost:3000/api/auth/verify-email?token=${token}&callbackURL=${encodeURIComponent(frontendUrl)}`
+        );
+
         await resend.emails.send({
           from: process.env.FROM_EMAIL || "hello@dataprism.app",
           to: user.email,
