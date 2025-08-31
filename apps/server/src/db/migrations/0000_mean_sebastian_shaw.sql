@@ -23,9 +23,12 @@ CREATE TABLE "account" (
 	"password" text,
 	"access_token" text,
 	"refresh_token" text,
+	"id_token" text,
 	"access_token_expires_at" timestamp,
 	"refresh_token_expires_at" timestamp,
-	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+	"scope" text,
+	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
@@ -35,7 +38,8 @@ CREATE TABLE "session" (
 	"expires_at" timestamp NOT NULL,
 	"ip_address" text,
 	"user_agent" text,
-	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "user" (
@@ -53,14 +57,16 @@ CREATE TABLE "user" (
 CREATE TABLE "verification" (
 	"id" text PRIMARY KEY NOT NULL,
 	"identifier" text NOT NULL,
-	"email" text NOT NULL,
-	"code" text NOT NULL,
-	"type" "verification_type" NOT NULL,
+	"value" text NOT NULL,
+	"email" text,
+	"code" text,
+	"type" "verification_type" DEFAULT 'EMAIL_VERIFICATION' NOT NULL,
 	"status" "verification_status" DEFAULT 'PENDING' NOT NULL,
 	"attempts" integer DEFAULT 0 NOT NULL,
 	"expires_at" timestamp NOT NULL,
 	"verified_at" timestamp,
-	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "website_invitations" (
