@@ -6,10 +6,8 @@ import { emailOTPClient } from "better-auth/client/plugins";
  * Handles authentication state and API calls
  */
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
+  baseURL: "http://localhost:3000",
   basePath: "/api/auth",
-
-  // Plugin configurations
   plugins: [emailOTPClient()],
 });
 

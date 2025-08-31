@@ -28,7 +28,7 @@ export default function SignInPage() {
           password: value.password,
         },
         {
-          onSuccess: () => {
+          onSuccess: async () => {
             toast.success("Welcome back!");
             router.push("/dashboard");
           },
@@ -44,18 +44,6 @@ export default function SignInPage() {
           },
         }
       );
-    },
-    validators: {
-      onSubmit: z.object({
-        email: z.string().email("Invalid email address"),
-        password: z
-          .string()
-          .min(8, "Password must be at least 8 characters")
-          .regex(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-            "Password must contain at least one uppercase letter, lowercase letter, and number"
-          ),
-      }),
     },
   });
 
@@ -89,7 +77,16 @@ export default function SignInPage() {
           }}
           className="space-y-4"
         >
-          <form.Field name="email">
+          <form.Field 
+            name="email"
+            validators={{
+              onChange: ({ value }) => {
+                if (!value) return "Email is required";
+                if (!/\S+@\S+\.\S+/.test(value)) return "Invalid email address";
+                return undefined;
+              }
+            }}
+          >
             {(field) => (
               <div className="flex flex-col gap-2">
                 <Label htmlFor={field.name} className="text-white">
@@ -107,14 +104,22 @@ export default function SignInPage() {
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-red-500">
-                    {field.state.meta.errors[0]?.toString()}
+                    {field.state.meta.errors[0]}
                   </p>
                 )}
               </div>
             )}
           </form.Field>
 
-          <form.Field name="password">
+          <form.Field 
+            name="password"
+            validators={{
+              onChange: ({ value }) => {
+                if (!value) return "Password is required";
+                return undefined;
+              }
+            }}
+          >
             {(field) => (
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
@@ -137,7 +142,7 @@ export default function SignInPage() {
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-red-500">
-                    {field.state.meta.errors[0]?.toString()}
+                    {field.state.meta.errors[0]}
                   </p>
                 )}
               </div>

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { useForm } from "@tanstack/react-form";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,74 +13,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { SocialLoginButtons } from "@/components/auth/social-login-buttons";
 import { PasswordInput } from "@/components/auth/password-input";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
 
-interface SignUpFormData {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  referralSource: string;
-}
-
-function SignUpPage() {
+export default function SignUpPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState<SignUpFormData>({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    referralSource: "",
-  });
-  const [errors, setErrors] = useState<Partial<SignUpFormData>>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const { isPending } = authClient.useSession();
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<SignUpFormData> = {};
-
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Invalid email address";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
-    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = "Password must contain at least one uppercase letter, lowercase letter, and number";
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords don't match";
-    }
-
-    if (!formData.referralSource) {
-      newErrors.referralSource = "Please select how you heard about us";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-
-    try {
-      await authClient.signUp.email(
+  const form = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      referralSource: "",
+    },
+    onSubmit: async ({ value }) => {
+      const result = await authClient.signUp.email(
         {
-          email: formData.email,
-          password: formData.password,
-          name: formData.email.split("@")[0],
+          email: value.email,
+          password: value.password,
+          name: value.email.split("@")[0],
         },
         {
           onSuccess: (data) => {
@@ -90,17 +45,12 @@ function SignUpPage() {
             );
           },
           onError: (error) => {
-            toast.error(error.error.message || error.error.statusText);
+            toast.error(error.error.message || error.error.statusText || "An error occurred");
           },
         }
       );
-    } catch (error) {
-      console.error("Sign up error:", error);
-      toast.error("An unexpected error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+  });
 
   return (
     <AuthLayout
@@ -124,121 +74,185 @@ function SignUpPage() {
         </div>
 
         {/* Email/Password Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email" className="text-white">
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="hello@dataprism.app"
-              className="h-10 placeholder:text-md"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="space-y-4"
+        >
+          <form.Field 
+            name="email"
+            validators={{
+              onChange: ({ value }) => {
+                if (!value) return "Email is required";
+                if (!/\S+@\S+\.\S+/.test(value)) return "Invalid email address";
+                return undefined;
               }
-              disabled={isLoading}
-              required
-            />
-            {errors.email && (
-              <p className="text-sm text-red-500">{errors.email}</p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="password" className="text-white">
-              Password
-            </Label>
-            <PasswordInput
-              id="password"
-              value={formData.password}
-              onChange={(value) =>
-                setFormData({ ...formData, password: value })
-              }
-              disabled={isLoading}
-              required
-            />
-            {errors.password && (
-              <p className="text-sm text-red-500">{errors.password}</p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="confirmPassword" className="text-white">
-              Confirm Password
-            </Label>
-            <PasswordInput
-              id="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={(value) =>
-                setFormData({ ...formData, confirmPassword: value })
-              }
-              disabled={isLoading}
-              required
-            />
-            {errors.confirmPassword && (
-              <p className="text-sm text-red-500">{errors.confirmPassword}</p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="referralSource" className="text-white">
-              How did you hear about us?
-            </Label>
-            <Select
-              value={formData.referralSource}
-              onValueChange={(value) =>
-                setFormData({ ...formData, referralSource: value })
-              }
-              disabled={isLoading}
-            >
-              <SelectTrigger className="h-10 w-full border-0">
-                <SelectValue placeholder="Select an option" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="search-engine">Search Engine</SelectItem>
-                <SelectItem value="social-media">Social Media</SelectItem>
-                <SelectItem value="friend-colleague">
-                  Friend/Colleague
-                </SelectItem>
-                <SelectItem value="advertisement">Advertisement</SelectItem>
-                <SelectItem value="blog-article">Blog/Article</SelectItem>
-                <SelectItem value="conference-event">
-                  Conference/Event
-                </SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.referralSource && (
-              <p className="text-sm text-red-500">{errors.referralSource}</p>
-            )}
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full h-10 cursor-pointer hover:shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:brightness-107 transition-all duration-300"
-            disabled={isLoading}
+            }}
           >
-            {isLoading ? "Creating account..." : "Create account"}
-          </Button>
+            {(field) => (
+              <div className="flex flex-col gap-2">
+                <Label htmlFor={field.name} className="text-white">
+                  Email
+                </Label>
+                <Input
+                  id={field.name}
+                  type="email"
+                  placeholder="hello@dataprism.app"
+                  className="h-10 placeholder:text-md"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  disabled={form.state.isSubmitting}
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-red-500">
+                    {field.state.meta.errors[0]}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field 
+            name="password"
+            validators={{
+              onChange: ({ value }) => {
+                if (!value) return "Password is required";
+                if (value.length < 8) return "Password must be at least 8 characters";
+                if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
+                  return "Password must contain at least one uppercase letter, lowercase letter, and number";
+                }
+                return undefined;
+              }
+            }}
+          >
+            {(field) => (
+              <div className="flex flex-col gap-2">
+                <Label htmlFor={field.name} className="text-white">
+                  Password
+                </Label>
+                <PasswordInput
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(value) => field.handleChange(value)}
+                  disabled={form.state.isSubmitting}
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-red-500">
+                    {field.state.meta.errors[0]}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field 
+            name="confirmPassword"
+            validators={{
+              onChangeListenTo: ['password'],
+              onChange: ({ value, fieldApi }) => {
+                if (!value) return "Please confirm your password";
+                if (value !== fieldApi.form.getFieldValue('password')) {
+                  return "Passwords don't match";
+                }
+                return undefined;
+              }
+            }}
+          >
+            {(field) => (
+              <div className="flex flex-col gap-2">
+                <Label htmlFor={field.name} className="text-white">
+                  Confirm Password
+                </Label>
+                <PasswordInput
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(value) => field.handleChange(value)}
+                  disabled={form.state.isSubmitting}
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-red-500">
+                    {field.state.meta.errors[0]}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field 
+            name="referralSource"
+            validators={{
+              onChange: ({ value }) => {
+                if (!value) return "Please select how you heard about us";
+                return undefined;
+              }
+            }}
+          >
+            {(field) => (
+              <div className="flex flex-col gap-2">
+                <Label htmlFor={field.name} className="text-white">
+                  How did you hear about us?
+                </Label>
+                <Select
+                  value={field.state.value}
+                  onValueChange={(value) => field.handleChange(value)}
+                  disabled={form.state.isSubmitting}
+                >
+                  <SelectTrigger className="h-10 w-full border-0">
+                    <SelectValue placeholder="Select an option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="search-engine">Search Engine</SelectItem>
+                    <SelectItem value="social-media">Social Media</SelectItem>
+                    <SelectItem value="friend-colleague">
+                      Friend/Colleague
+                    </SelectItem>
+                    <SelectItem value="advertisement">Advertisement</SelectItem>
+                    <SelectItem value="blog-article">Blog/Article</SelectItem>
+                    <SelectItem value="conference-event">
+                      Conference/Event
+                    </SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-red-500">
+                    {field.state.meta.errors[0]}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+
+          <form.Subscribe>
+            {(state) => (
+              <Button
+                type="submit"
+                className="w-full h-10 cursor-pointer hover:shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:brightness-107 transition-all duration-300"
+                disabled={!state.canSubmit || state.isSubmitting}
+              >
+                {state.isSubmitting ? "Creating account..." : "Create account"}
+              </Button>
+            )}
+          </form.Subscribe>
         </form>
 
         {/* Sign In Link */}
         <div className="text-center">
           <p className="text-sm text-gray-400">
             Already have an account?{" "}
-            <a
-              href="/sign-in"
+            <button
+              onClick={() => router.push("/sign-in")}
               className="text-white hover:underline font-medium cursor-pointer"
             >
               Sign in
-            </a>
+            </button>
           </p>
         </div>
       </div>
     </AuthLayout>
   );
 }
-
-export default SignUpPage;

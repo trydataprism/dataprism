@@ -185,41 +185,15 @@ export default function EnterCodePage() {
           </Button>
         </form>
 
-        {/* Back Button and Resend */}
-        <div className="flex items-center justify-between pt-4 border-t border-border/10">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back
-          </button>
-          
-          <div className="text-center space-y-2">
-            <p className="text-sm text-gray-400">
-              Didn&apos;t receive the code?{" "}
-              <button
-                type="button"
-                onClick={handleResendCode}
-                className={`font-medium cursor-pointer ${
-                  resendCooldown === 0
-                    ? "text-white hover:underline"
-                    : "text-gray-400 cursor-not-allowed"
-                }`}
-                disabled={resendCooldown > 0}
-              >
-                {resendCooldown === 0 ? "Resend code" : `Resend in ${resendCooldown}s`}
-              </button>
-            </p>
-            <p className="text-sm text-gray-400">
-              <button
-                onClick={() => router.push("/sign-in")}
-                className="text-white hover:underline font-medium cursor-pointer"
-              >
-                Back to sign in
-              </button>
-            </p>
-          </div>
+        <div className="text-center pt-4 border-t border-border/10">
+          <p className="text-sm text-gray-400">
+            <button
+              onClick={() => router.push("/sign-in")}
+              className="text-white hover:underline font-medium cursor-pointer"
+            >
+              Back to sign in
+            </button>
+          </p>
         </div>
       </AuthLayout>
   );

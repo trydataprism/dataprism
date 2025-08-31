@@ -10,7 +10,8 @@ const publicRoutes = ["/", "/sign-in", "/sign-up"];
 const AUTH_COOKIES = [
   "better-auth.session_token",
   "better-auth.session",
-  "better-auth.session_data"
+  "better-auth.session_data",
+  "better-auth.csrf_token", // CSRF token da kontrol et
 ];
 
 export async function middleware(request: NextRequest) {
