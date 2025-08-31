@@ -326,6 +326,13 @@ export const auth = betterAuth({
     origin: process.env.CORS_ORIGIN || "http://localhost:3001",
   },
 
+  // Account linking configuration
+  account: {
+    accountLinking: {
+      enabled: false, // Disable automatic account linking
+    },
+  },
+
   // User fields configuration
   user: {
     additionalFields: {
