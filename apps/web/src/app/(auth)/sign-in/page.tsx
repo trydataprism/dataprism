@@ -4,22 +4,15 @@ import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import z from "zod";
-import Loader from "@/components/loader";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
-import {
-  AuthLayout,
-  FormField,
-  EmailInput,
-  PasswordInput,
-  SocialLogin,
-} from "@/components/auth";
+import { AuthLayout } from "@/components/auth/auth-layout";
+import { SocialLoginButtons } from "@/components/auth/social-login-buttons";
+import { PasswordInput } from "@/components/auth/password-input";
 
-export default function SignInForm({
-  onSwitchToSignUp,
-}: {
-  onSwitchToSignUp: () => void;
-}) {
+export default function SignInPage() {
   const router = useRouter();
   const { isPending } = authClient.useSession();
 
@@ -29,25 +22,32 @@ export default function SignInForm({
       password: "",
     },
     onSubmit: async ({ value }) => {
-      await authClient.signIn.email(
+      const result = await authClient.signIn.email(
         {
           email: value.email,
           password: value.password,
         },
         {
           onSuccess: () => {
+            toast.success("Welcome back!");
             router.push("/dashboard");
-            toast.success("Sign in successful");
           },
           onError: (error) => {
-            toast.error(error.error.message || error.error.statusText);
+            if (error.error.message?.includes("EMAIL_NOT_VERIFIED")) {
+              toast.error("Please verify your email before signing in");
+              router.push(
+                `/enter-code?email=${encodeURIComponent(value.email)}&type=verification`
+              );
+            } else {
+              toast.error("Invalid email or password");
+            }
           },
         }
       );
     },
     validators: {
       onSubmit: z.object({
-        email: z.email("Invalid email address"),
+        email: z.string().email("Invalid email address"),
         password: z
           .string()
           .min(8, "Password must be at least 8 characters")
@@ -62,93 +62,113 @@ export default function SignInForm({
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Sign in to continue with Dataprism"
-      heroTitle="Analytics made effortless"
-      heroSubtitle="Turn your data into actionable insights with ease."
+      description="Sign in to your account to continue"
     >
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          form.handleSubmit();
-        }}
-        className="space-y-4"
-      >
-        <form.Field name="email">
-          {(field) => (
-            <FormField
-              label="Email"
-              htmlFor={field.name}
-              errors={field.state.meta.errors}
-            >
-              <EmailInput
-                id={field.name}
-                name={field.name}
-                placeholder="you@example.com"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </FormField>
-          )}
-        </form.Field>
+      <div className="space-y-6">
+        {/* Social Login */}
+        <SocialLoginButtons />
 
-        <form.Field name="password">
-          {(field) => (
-            <FormField
-              label={
-                <div className="flex items-center justify-between w-full">
-                  <span>Password</span>
+        {/* Divider */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-border/70" />
+          </div>
+          <div className="relative flex justify-center text-xs lowercase">
+            <span className="bg-background px-4 text-gray-400">
+              Or continue with
+            </span>
+          </div>
+        </div>
+
+        {/* Email/Password Form */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="space-y-4"
+        >
+          <form.Field name="email">
+            {(field) => (
+              <div className="flex flex-col gap-2">
+                <Label htmlFor={field.name} className="text-white">
+                  Email
+                </Label>
+                <Input
+                  id={field.name}
+                  type="email"
+                  placeholder="hello@dataprism.app"
+                  className="h-10 placeholder:text-md"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  disabled={form.state.isSubmitting}
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-red-500">
+                    {field.state.meta.errors[0]?.toString()}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field name="password">
+            {(field) => (
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between items-center">
+                  <Label htmlFor={field.name} className="text-white">
+                    Password
+                  </Label>
                   <button
                     type="button"
                     onClick={() => router.push("/forgot-password")}
-                    className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                    className="text-xs text-gray-400 hover:text-white transition-colors cursor-pointer"
                   >
-                    Forgot password?
+                    Forgot Password?
                   </button>
                 </div>
-              }
-              htmlFor={field.name}
-              errors={field.state.meta.errors}
+                <PasswordInput
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(value) => field.handleChange(value)}
+                  disabled={form.state.isSubmitting}
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-red-500">
+                    {field.state.meta.errors[0]?.toString()}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+
+          <form.Subscribe>
+            {(state) => (
+              <Button
+                type="submit"
+                className="w-full h-10 cursor-pointer hover:shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:brightness-107 transition-all duration-300"
+                disabled={!state.canSubmit || state.isSubmitting}
+              >
+                {state.isSubmitting ? "Signing in..." : "Sign in"}
+              </Button>
+            )}
+          </form.Subscribe>
+        </form>
+
+        {/* Sign Up Link */}
+        <div className="text-center">
+          <p className="text-sm text-gray-400">
+            Don&apos;t have an account?{" "}
+            <button
+              onClick={() => router.push("/sign-up")}
+              className="text-white hover:underline font-medium cursor-pointer"
             >
-              <PasswordInput
-                id={field.name}
-                name={field.name}
-                placeholder="Enter your password"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </FormField>
-          )}
-        </form.Field>
-
-        <form.Subscribe>
-          {(state) => (
-            <Button
-              type="submit"
-              className="w-full h-10 text-sm font-medium bg-gradient-to-b from-white via-gray-100 to-gray-200 hover:from-gray-100 hover:via-gray-200 hover:to-gray-300 text-gray-900 cursor-pointer transition-colors duration-200 shadow-sm"
-              disabled={!state.canSubmit || state.isSubmitting}
-            >
-              {state.isSubmitting ? "Signing in..." : "Sign in"}
-            </Button>
-          )}
-        </form.Subscribe>
-      </form>
-
-      <SocialLogin type="signin" />
-
-      {/* Sign Up Link */}
-      <div className="text-center mt-6">
-        <button
-          onClick={() => router.push("/sign-up")}
-          className="text-sm text-muted-foreground hover:text-foreground font-normal transition-colors cursor-pointer"
-        >
-          Don't have an account?{" "}
-          <span className="font-medium text-primary hover:text-primary/80 underline underline-offset-2">
-            Sign up
-          </span>
-        </button>
+              Sign up
+            </button>
+          </p>
+        </div>
       </div>
     </AuthLayout>
   );
