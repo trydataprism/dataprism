@@ -20,12 +20,23 @@ CREATE TABLE "account" (
 	"user_id" text NOT NULL,
 	"account_id" text NOT NULL,
 	"provider_id" text NOT NULL,
-	"password" text,
 	"access_token" text,
 	"refresh_token" text,
+	"id_token" text,
 	"access_token_expires_at" timestamp,
 	"refresh_token_expires_at" timestamp,
-	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+	"scope" text,
+	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "verification" (
+	"id" text PRIMARY KEY NOT NULL,
+	"identifier" text NOT NULL,
+	"value" text NOT NULL,
+	"expires_at" timestamp NOT NULL,
+	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
@@ -35,32 +46,19 @@ CREATE TABLE "session" (
 	"expires_at" timestamp NOT NULL,
 	"ip_address" text,
 	"user_agent" text,
-	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "user" (
-	"id" text PRIMARY KEY NOT NULL,
-	"name" text NOT NULL,
-	"email" text NOT NULL,
-	"email_verified" boolean DEFAULT false NOT NULL,
-	"image" text,
-	"newsletter" boolean DEFAULT false NOT NULL,
-	"referral_source" text,
 	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "verification" (
+CREATE TABLE "user" (
 	"id" text PRIMARY KEY NOT NULL,
-	"identifier" text NOT NULL,
+	"name" text,
 	"email" text NOT NULL,
-	"code" text NOT NULL,
-	"type" "verification_type" NOT NULL,
-	"status" "verification_status" DEFAULT 'PENDING' NOT NULL,
-	"attempts" integer DEFAULT 0 NOT NULL,
-	"expires_at" timestamp NOT NULL,
-	"verified_at" timestamp,
-	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+	"email_verified" boolean DEFAULT false NOT NULL,
+	"image" text,
+	"referral_source" text,
+	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "website_invitations" (
@@ -346,16 +344,13 @@ ALTER TABLE "exports" ADD CONSTRAINT "exports_user_id_user_id_fk" FOREIGN KEY ("
 ALTER TABLE "exports" ADD CONSTRAINT "exports_website_id_websites_id_fk" FOREIGN KEY ("website_id") REFERENCES "public"."websites"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE UNIQUE INDEX "accounts_provider_account_unique" ON "account" USING btree ("provider_id","account_id");--> statement-breakpoint
 CREATE INDEX "accounts_user_id_idx" ON "account" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "verifications_identifier_idx" ON "verification" USING btree ("identifier");--> statement-breakpoint
+CREATE INDEX "verifications_expires_at_idx" ON "verification" USING btree ("expires_at");--> statement-breakpoint
 CREATE UNIQUE INDEX "sessions_token_unique" ON "session" USING btree ("token");--> statement-breakpoint
 CREATE INDEX "sessions_user_id_idx" ON "session" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "sessions_expires_at_idx" ON "session" USING btree ("expires_at");--> statement-breakpoint
 CREATE UNIQUE INDEX "users_email_unique" ON "user" USING btree ("email");--> statement-breakpoint
 CREATE INDEX "users_created_at_idx" ON "user" USING btree ("created_at");--> statement-breakpoint
-CREATE INDEX "verifications_email_idx" ON "verification" USING btree ("email");--> statement-breakpoint
-CREATE INDEX "verifications_identifier_idx" ON "verification" USING btree ("identifier");--> statement-breakpoint
-CREATE INDEX "verifications_code_idx" ON "verification" USING btree ("code");--> statement-breakpoint
-CREATE INDEX "verifications_expires_at_idx" ON "verification" USING btree ("expires_at");--> statement-breakpoint
-CREATE INDEX "verifications_type_status_idx" ON "verification" USING btree ("type","status");--> statement-breakpoint
 CREATE UNIQUE INDEX "website_invitations_website_email_unique" ON "website_invitations" USING btree ("website_id","email");--> statement-breakpoint
 CREATE INDEX "website_invitations_website_id_idx" ON "website_invitations" USING btree ("website_id");--> statement-breakpoint
 CREATE INDEX "website_invitations_email_idx" ON "website_invitations" USING btree ("email");--> statement-breakpoint

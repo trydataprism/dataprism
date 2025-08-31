@@ -139,7 +139,7 @@ export default function TermsPage() {
                     <p className="text-gray-200 leading-relaxed text-lg">
                       You must be at least 13 years old to use our services. If
                       you are under 18, you represent that you have your parent
-                      or guardian's permission to use the services.
+                      or guardian&apos;s permission to use the services.
                     </p>
                     <p className="text-gray-300 leading-relaxed text-lg">
                       You represent and warrant that you have the right,

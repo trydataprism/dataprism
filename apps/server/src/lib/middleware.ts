@@ -18,7 +18,9 @@ export function createRateLimit(options: {
     keyGenerator: (c: Context) => {
       // Use IP address as the key for rate limiting
       const forwarded = c.req.header("x-forwarded-for");
-      const ip = forwarded ? forwarded.split(",")[0] : c.env?.remoteAddr || "unknown";
+      const ip = forwarded
+        ? forwarded.split(",")[0]
+        : c.env?.remoteAddr || "unknown";
       return ip;
     },
   });
@@ -32,7 +34,9 @@ export const authRateLimit = createRateLimit(RATE_LIMITS.AUTH);
 /**
  * Moderate rate limiting for password reset endpoints
  */
-export const passwordResetRateLimit = createRateLimit(RATE_LIMITS.PASSWORD_RESET);
+export const passwordResetRateLimit = createRateLimit(
+  RATE_LIMITS.PASSWORD_RESET
+);
 
 /**
  * General API rate limiting
@@ -42,7 +46,9 @@ export const generalRateLimit = createRateLimit(RATE_LIMITS.GENERAL);
 /**
  * Email verification rate limiting
  */
-export const emailVerificationRateLimit = createRateLimit(RATE_LIMITS.EMAIL_VERIFICATION);
+export const emailVerificationRateLimit = createRateLimit(
+  RATE_LIMITS.EMAIL_VERIFICATION
+);
 
 /**
  * CORS middleware with security headers
@@ -53,22 +59,30 @@ export const corsMiddleware = async (c: Context, next: Next) => {
   // Always set CORS headers for preflight requests
   c.header("Access-Control-Allow-Methods", CORS_CONFIG.allowedMethods);
   c.header("Access-Control-Allow-Headers", CORS_CONFIG.allowedHeaders);
-  c.header("Access-Control-Allow-Credentials", CORS_CONFIG.credentials.toString());
+  c.header(
+    "Access-Control-Allow-Credentials",
+    CORS_CONFIG.credentials.toString()
+  );
   c.header("Access-Control-Max-Age", CORS_CONFIG.maxAge.toString());
 
-  // Set Access-Control-Allow-Origin header
-  if (origin && CORS_CONFIG.allowedOrigins.includes(origin)) {
-    c.header("Access-Control-Allow-Origin", origin);
-  } else if (!origin) {
-    // For requests with no origin (like direct browser navigation), allow
-    c.header("Access-Control-Allow-Origin", "*");
-  } else {
-    // For development, if origin doesn't match exactly but is localhost, allow it
-    if (process.env.NODE_ENV === "development" && origin?.startsWith("http://localhost:")) {
+  // In development, be completely permissive with CORS
+  if (process.env.NODE_ENV === "development") {
+    // Allow any localhost origin in development
+    if (origin?.includes("localhost")) {
       c.header("Access-Control-Allow-Origin", origin);
-    } else {
-      // Fallback for development
+    } else if (!origin) {
+      // For requests with no origin, allow localhost:3001
       c.header("Access-Control-Allow-Origin", "http://localhost:3001");
+    } else {
+      // Fallback for development - allow all
+      c.header("Access-Control-Allow-Origin", "*");
+    }
+  } else {
+    // Production CORS logic - strict
+    if (origin && CORS_CONFIG.allowedOrigins.includes(origin)) {
+      c.header("Access-Control-Allow-Origin", origin);
+    } else if (!origin) {
+      c.header("Access-Control-Allow-Origin", "*");
     }
   }
 
@@ -76,16 +90,25 @@ export const corsMiddleware = async (c: Context, next: Next) => {
   if (c.req.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
-      headers: c.res.headers
+      headers: c.res.headers,
     });
   }
 
-  // Security headers
-  c.header("X-Content-Type-Options", "nosniff");
-  c.header("X-Frame-Options", "DENY");
-  c.header("X-XSS-Protection", "1; mode=block");
-  c.header("Referrer-Policy", "strict-origin-when-cross-origin");
-  c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  // Security headers - less strict in development
+  if (process.env.NODE_ENV === "development") {
+    c.header("X-Content-Type-Options", "nosniff");
+    c.header("X-Frame-Options", "SAMEORIGIN");
+    c.header("X-XSS-Protection", "1");
+  } else {
+    c.header("X-Content-Type-Options", "nosniff");
+    c.header("X-Frame-Options", "DENY");
+    c.header("X-XSS-Protection", "1; mode=block");
+    c.header("Referrer-Policy", "strict-origin-when-cross-origin");
+    c.header(
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubDomains"
+    );
+  }
 
   await next();
 };
@@ -105,7 +128,9 @@ export const loggerMiddleware = async (c: Context, next: Next) => {
   const duration = Date.now() - start;
   const status = c.res.status;
 
-  console.log(`${method} ${url} ${status} ${duration}ms - ${ip} - ${userAgent}`);
+  console.log(
+    `${method} ${url} ${status} ${duration}ms - ${ip} - ${userAgent}`
+  );
 };
 
 /**
@@ -124,10 +149,16 @@ export const errorMiddleware = async (c: Context, next: Next) => {
     });
 
     if (error instanceof Error) {
-      return c.json({
-        error: "Internal server error",
-        message: process.env.NODE_ENV === "development" ? error.message : "Something went wrong",
-      }, 500);
+      return c.json(
+        {
+          error: "Internal server error",
+          message:
+            process.env.NODE_ENV === "development"
+              ? error.message
+              : "Something went wrong",
+        },
+        500
+      );
     }
 
     return c.json({ error: "Internal server error" }, 500);

@@ -22,7 +22,7 @@ export interface TrackingData {
 export interface EventData extends TrackingData {
   eventType?: string;
   eventName?: string;
-  properties?: Record<string, any>;
+  properties?: Record<string, string | number | boolean | null | undefined>;
 }
 
 export interface SessionEndData {
@@ -60,12 +60,12 @@ export interface GeolocationData {
 }
 
 export interface RealTimeVisitorResponse {
-  visitors: any[];
+  visitors: TrackingData[];
   count: number;
   timestamp: string;
 }
 
 export interface SessionResponse {
-  session: any;
+  session: TrackingData;
   timestamp: string;
 }

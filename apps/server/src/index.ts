@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { authRouter } from "./routers/auth";
 import { tracking } from "./routers/tracking";
+import auth from "./routers/auth";
 import { Hono } from "hono";
 import {
   corsMiddleware,
@@ -11,16 +11,18 @@ import {
 
 const app = new Hono();
 
-// Apply global middleware - CORS must come first
-app.use("*", corsMiddleware);
+// Apply global middleware
 app.use("*", loggerMiddleware);
 app.use("*", errorMiddleware);
 
-// Apply general rate limiting to all non-auth routes
-app.use("/api/*", generalRateLimit);
+// Mount better-auth routes (with CORS handled in auth router)
+app.route("/api", auth);
 
-// Mount auth router with specific rate limiting
-app.route("/api/auth", authRouter);
+// Apply CORS middleware to non-auth routes
+app.use("/api/track/*", corsMiddleware);
+
+// Apply general rate limiting to all non-auth routes
+app.use("/api/track/*", generalRateLimit);
 
 // Mount tracking routes
 app.route("/api/track", tracking);

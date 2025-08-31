@@ -9,6 +9,7 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "check-types": "turbo check-types",
+    "lint": "turbo lint",
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
@@ -17,10 +18,7 @@
     "db:generate": "turbo -F server db:generate",
     "db:migrate": "turbo -F server db:migrate"
   },
-  "dependencies": {
-    "@radix-ui/react-label": "^2.1.7",
-    "framer-motion": "^12.23.12"
-  },
+  "dependencies": {},
   "devDependencies": {
     "turbo": "^2.5.4"
   },

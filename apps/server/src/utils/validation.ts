@@ -1,10 +1,9 @@
-import type { Context } from "hono";
 import type { z } from "zod";
 import type { ValidationError } from "../types";
 
 export function validateRequestBody<T>(
   schema: z.ZodSchema<T>,
-  data: any
+  data: unknown
 ): { success: true; data: T } | { success: false; errors: ValidationError[] } {
   const result = schema.safeParse(data);
 
@@ -23,7 +22,7 @@ export function validateRequestBody<T>(
 
 export function validateRequestParams<T>(
   schema: z.ZodSchema<T>,
-  data: any
+  data: unknown
 ): { success: true; data: T } | { success: false; errors: ValidationError[] } {
   return validateRequestBody(schema, data);
 }

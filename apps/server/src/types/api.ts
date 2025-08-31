@@ -1,6 +1,6 @@
 import type { Context } from "hono";
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -8,17 +8,17 @@ export interface ApiResponse<T = any> {
 }
 
 export interface ApiContext extends Context {
-  get: (key: string) => any;
-  set: (key: string, value: any) => void;
+  get: (key: string) => unknown;
+  set: (key: string, value: unknown) => void;
 }
 
 export interface RequestHeaders {
   origin?: string;
   referer?: string;
-  'user-agent'?: string;
-  'x-forwarded-for'?: string;
-  'x-real-ip'?: string;
-  'cf-connecting-ip'?: string;
+  "user-agent"?: string;
+  "x-forwarded-for"?: string;
+  "x-real-ip"?: string;
+  "cf-connecting-ip"?: string;
   authorization?: string;
 }
 

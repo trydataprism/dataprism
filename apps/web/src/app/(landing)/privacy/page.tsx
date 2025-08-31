@@ -266,7 +266,8 @@ export default function PrivacyPage() {
                     <p className="text-gray-200 leading-relaxed text-lg">
                       We may update this privacy policy from time to time. We
                       will notify you of any changes by posting the new policy
-                      on this page and updating the "Last updated" date.
+                      on this page and updating the &quot;Last updated&quot;
+                      date.
                     </p>
                     <p className="text-gray-300 leading-relaxed text-lg">
                       Your continued use of our services after any changes
