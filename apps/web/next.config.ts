@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     esmExternals: true,
   },
   transpilePackages: ["better-auth"],
+  images: {
+    domains: ["avatars.githubusercontent.com"],
+  },
 };
 
 export default nextConfig;
