@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useSession } from "@/lib/auth-client";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import {
   ChevronRight,
   ChevronsUpDown,
@@ -30,6 +31,8 @@ function page() {
     initial: "AC",
   });
   const [selectedProject, setSelectedProject] = useState("Web Analytics");
+  const [activeTab, setActiveTab] = useState("Overview");
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const organizations = [
     { name: "Acme Corp", initial: "AC" },
@@ -65,30 +68,35 @@ function page() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex items-center justify-between py-4 px-5 bg-[#0a0a0a]">
+      <div className="flex items-center justify-between py-4 px-6 bg-[#0a0a0a]">
         <div className="flex items-center gap-2">
-          <Image src="/dark_logo.svg" width={20} height={20} alt="Dataprism" />
+          <Image src="/dark_logo.svg" width={18} height={18} alt="Dataprism" />
 
           <ChevronRight className="w-4 h-4 text-gray-400" />
 
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-2 text-white hover:bg-neutral-950/70 px-2 py-1.5 rounded text-sm focus:outline-none focus:ring-0">
-              <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center text-black text-[10px] font-semibold">
+            <DropdownMenuTrigger className="flex items-center gap-2 text-white hover:bg-neutral-950/70 px-2 py-1.5 rounded text-[13px] focus:outline-none focus:ring-0 cursor-pointer">
+              <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-black text-[10px] font-semibold">
                 {selectedOrg.initial}
               </div>
               <span className="font-semibold">{selectedOrg.name}</span>
-              <ChevronsUpDown className="w-4 h-4 text-white" />
+              <ChevronsUpDown className="w-3 h-3 text-white" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="border-0">
+            <DropdownMenuContent>
+              <div className="px-2 py-2">
+                <h3 className="text-xs font-medium text-gray-300">
+                  Organizations
+                </h3>
+              </div>
               {organizations.map((org, index) => (
                 <DropdownMenuItem
                   key={index}
                   onClick={() => setSelectedOrg(org)}
                 >
-                  <div className="w-5 h-5 bg-white rounded-md flex items-center justify-center text-black text-[10px] font-semibold mr-2">
+                  <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-black text-[10px] font-semibold mr-2">
                     {org.initial}
                   </div>
-                  {org.name}
+                  <span className="text-[13px]">{org.name}</span>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -97,17 +105,20 @@ function page() {
           <ChevronRight className="w-4 h-4 text-gray-400" />
 
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-2 text-white hover:bg-neutral-950/70 px-2 py-1.5 rounded text-sm focus:outline-none focus:ring-0">
+            <DropdownMenuTrigger className="flex items-center gap-2 text-white hover:bg-neutral-950/70 px-2 py-1.5 rounded text-[13px] focus:outline-none focus:ring-0 cursor-pointer">
               <span className="font-semibold">{selectedProject}</span>
-              <ChevronsUpDown className="w-4 h-4 text-white" />
+              <ChevronsUpDown className="w-3 h-3 text-white" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="border-0">
+            <DropdownMenuContent>
+              <div className="px-2 py-2">
+                <h3 className="text-xs font-medium text-gray-300">Projects</h3>
+              </div>
               {projects.map((project, index) => (
                 <DropdownMenuItem
                   key={index}
                   onClick={() => setSelectedProject(project)}
                 >
-                  {project}
+                  <span className="text-[13px]">{project}</span>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -221,81 +232,93 @@ function page() {
       </div>
 
       {/* Navigation Menu */}
-      <div className="bg-[#0a0a0a] border-b border-gray-800">
-        <nav className="flex items-center px-5 py-3">
-          <div className="flex items-center space-x-8">
-            <a
-              href="#"
-              className="text-white text-sm font-medium border-b-2 border-white pb-1"
-            >
-              Overview
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
-            >
-              Integrations
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
-            >
-              Deployments
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
-            >
-              Activity
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
-            >
-              Domains
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
-            >
-              Usage
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
-            >
-              Observability
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
-            >
-              Storage
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
-            >
-              Flags
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
-            >
-              API Gateway
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
-            >
-              Support
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
-            >
-              Settings
-            </a>
+      <div className="bg-[#0a0a0a] border-b border-border relative">
+        <nav className="flex items-center px-5 pb-2">
+          <div className="flex items-center space-x-8 relative">
+            {[
+              "Overview",
+              "Integrations",
+              "Deployments",
+              "Activity",
+              "Domains",
+              "Usage",
+              "Observability",
+              "Storage",
+              "Flags",
+              "AI Gateway",
+              "Support",
+              "Settings",
+            ].map((tab, index) => (
+              <button
+                key={tab}
+                ref={(el) => {
+                  tabRefs.current[index] = el;
+                }}
+                onClick={() => setActiveTab(tab)}
+                className={`text-sm font-medium transition-colors pb-2 ${
+                  activeTab === tab
+                    ? "text-white"
+                    : "text-gray-400 hover:text-white"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+
+            {/* Animated Underline */}
+            <motion.div
+              className="absolute -bottom-2 h-0.5 bg-white"
+              initial={false}
+              animate={{
+                x: (() => {
+                  const activeIndex = [
+                    "Overview",
+                    "Integrations",
+                    "Deployments",
+                    "Activity",
+                    "Domains",
+                    "Usage",
+                    "Observability",
+                    "Storage",
+                    "Flags",
+                    "AI Gateway",
+                    "Support",
+                    "Settings",
+                  ].indexOf(activeTab);
+
+                  if (activeIndex === -1) return 0;
+
+                  let x = 0;
+                  for (let i = 0; i < activeIndex; i++) {
+                    x += (tabRefs.current[i]?.offsetWidth || 0) + 32; // 32px is space-x-8
+                  }
+                  return x;
+                })(),
+                width: (() => {
+                  const activeIndex = [
+                    "Overview",
+                    "Integrations",
+                    "Deployments",
+                    "Activity",
+                    "Domains",
+                    "Usage",
+                    "Observability",
+                    "Storage",
+                    "Flags",
+                    "AI Gateway",
+                    "Support",
+                    "Settings",
+                  ].indexOf(activeTab);
+
+                  return tabRefs.current[activeIndex]?.offsetWidth || 0;
+                })(),
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 400,
+                damping: 35,
+              }}
+            />
           </div>
         </nav>
       </div>
