@@ -65,7 +65,7 @@ function page() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex items-center justify-between py-4 px-5 bg-black">
+      <div className="flex items-center justify-between py-4 px-5 bg-[#0a0a0a]">
         <div className="flex items-center gap-2">
           <Image src="/dark_logo.svg" width={20} height={20} alt="Dataprism" />
 
@@ -119,7 +119,7 @@ function page() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input
               placeholder="Search..."
-              className="w-64 pl-10 bg-neutral-950 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-400"
+              className="w-64 pl-10 bg-black border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-400"
             />
           </div>
 
@@ -220,7 +220,87 @@ function page() {
         </div>
       </div>
 
-      <div className="rounded-t-xl mx-4 flex-1 bg-[#0a0a0a]"></div>
+      {/* Navigation Menu */}
+      <div className="bg-[#0a0a0a] border-b border-gray-800">
+        <nav className="flex items-center px-5 py-3">
+          <div className="flex items-center space-x-8">
+            <a
+              href="#"
+              className="text-white text-sm font-medium border-b-2 border-white pb-1"
+            >
+              Overview
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
+            >
+              Integrations
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
+            >
+              Deployments
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
+            >
+              Activity
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
+            >
+              Domains
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
+            >
+              Usage
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
+            >
+              Observability
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
+            >
+              Storage
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
+            >
+              Flags
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
+            >
+              API Gateway
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
+            >
+              Support
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 text-sm font-medium hover:text-white transition-colors"
+            >
+              Settings
+            </a>
+          </div>
+        </nav>
+      </div>
+
+      <div className="rounded-t-xl flex-1 bg-black"></div>
     </div>
   );
 }
