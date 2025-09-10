@@ -26,21 +26,21 @@ import { Input } from "@/components/ui/input";
 
 function page() {
   const { data: session, isPending, error } = useSession();
-  const [selectedOrg, setSelectedOrg] = useState({
-    name: "Acme Corp",
-    initial: "AC",
+  const [selectedTeam, setSelectedTeam] = useState({
+    name: "Team Name",
+    initial: "TN",
   });
-  const [selectedProject, setSelectedProject] = useState("Web Analytics");
-  const [activeTab, setActiveTab] = useState("Overview");
+  const [selectedEnvironment, setSelectedEnvironment] = useState("Development");
+  const [activeTab, setActiveTab] = useState("Sessions");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const organizations = [
-    { name: "Acme Corp", initial: "AC" },
-    { name: "Tech Solutions", initial: "TS" },
-    { name: "Digital Agency", initial: "DA" },
+  const teams = [
+    { name: "Team Name", initial: "TN" },
+    { name: "Development Team", initial: "DT" },
+    { name: "Production Team", initial: "PT" },
   ];
 
-  const projects = ["Web Analytics", "Mobile App", "E-commerce Site"];
+  const environments = ["Development", "Staging", "Production"];
 
   if (isPending) {
     return <div className="p-8">Loading...</div>;
@@ -77,48 +77,50 @@ function page() {
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 text-white hover:bg-neutral-950/70 px-2 py-1.5 rounded text-[13px] focus:outline-none focus:ring-0 cursor-pointer">
               <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-black text-[10px] font-semibold">
-                {selectedOrg.initial}
+                {selectedTeam.initial}
               </div>
-              <span className="font-semibold">{selectedOrg.name}</span>
+              <span className="font-semibold">{selectedTeam.name}</span>
               <ChevronsUpDown className="w-3 h-3 text-white" />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <div className="px-2 py-2">
-                <h3 className="text-xs font-medium text-gray-300">
-                  Organizations
-                </h3>
+                <h3 className="text-xs font-medium text-gray-300">Teams</h3>
               </div>
-              {organizations.map((org, index) => (
+              {teams.map((team, index) => (
                 <DropdownMenuItem
                   key={index}
-                  onClick={() => setSelectedOrg(org)}
+                  onClick={() => setSelectedTeam(team)}
                 >
                   <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-black text-[10px] font-semibold mr-2">
-                    {org.initial}
+                    {team.initial}
                   </div>
-                  <span className="text-[13px]">{org.name}</span>
+                  <span className="text-[13px]">{team.name}</span>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <ChevronRight className="w-4 h-4 text-gray-400" />
+          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
 
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 text-white hover:bg-neutral-950/70 px-2 py-1.5 rounded text-[13px] focus:outline-none focus:ring-0 cursor-pointer">
-              <span className="font-semibold">{selectedProject}</span>
+              <span className="bg-green-500 text-black px-2 py-0.5 rounded-full text-[10px] font-semibold">
+                Dev
+              </span>
               <ChevronsUpDown className="w-3 h-3 text-white" />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <div className="px-2 py-2">
-                <h3 className="text-xs font-medium text-gray-300">Projects</h3>
+                <h3 className="text-xs font-medium text-gray-300">
+                  Environments
+                </h3>
               </div>
-              {projects.map((project, index) => (
+              {environments.map((env, index) => (
                 <DropdownMenuItem
                   key={index}
-                  onClick={() => setSelectedProject(project)}
+                  onClick={() => setSelectedEnvironment(env)}
                 >
-                  <span className="text-[13px]">{project}</span>
+                  <span className="text-[13px]">{env}</span>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -236,18 +238,12 @@ function page() {
         <nav className="flex items-center px-5 pb-2">
           <div className="flex items-center space-x-8 relative">
             {[
-              "Overview",
-              "Integrations",
-              "Deployments",
-              "Activity",
-              "Domains",
-              "Usage",
-              "Observability",
-              "Storage",
-              "Flags",
-              "AI Gateway",
-              "Support",
-              "Settings",
+              "Quickstart",
+              "Playground",
+              "Sessions",
+              "Files",
+              "Credentials",
+              "Extensions",
             ].map((tab, index) => (
               <button
                 key={tab}
@@ -272,18 +268,12 @@ function page() {
               animate={{
                 x: (() => {
                   const activeIndex = [
-                    "Overview",
-                    "Integrations",
-                    "Deployments",
-                    "Activity",
-                    "Domains",
-                    "Usage",
-                    "Observability",
-                    "Storage",
-                    "Flags",
-                    "AI Gateway",
-                    "Support",
-                    "Settings",
+                    "Quickstart",
+                    "Playground",
+                    "Sessions",
+                    "Files",
+                    "Credentials",
+                    "Extensions",
                   ].indexOf(activeTab);
 
                   if (activeIndex === -1) return 0;
@@ -296,18 +286,12 @@ function page() {
                 })(),
                 width: (() => {
                   const activeIndex = [
-                    "Overview",
-                    "Integrations",
-                    "Deployments",
-                    "Activity",
-                    "Domains",
-                    "Usage",
-                    "Observability",
-                    "Storage",
-                    "Flags",
-                    "AI Gateway",
-                    "Support",
-                    "Settings",
+                    "Quickstart",
+                    "Playground",
+                    "Sessions",
+                    "Files",
+                    "Credentials",
+                    "Extensions",
                   ].indexOf(activeTab);
 
                   return tabRefs.current[activeIndex]?.offsetWidth || 0;
