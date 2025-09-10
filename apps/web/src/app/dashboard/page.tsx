@@ -238,12 +238,13 @@ function page() {
         <nav className="flex items-center px-5 pb-2">
           <div className="flex items-center space-x-8 relative">
             {[
-              "Quickstart",
-              "Playground",
+              "Websites",
+              "Events",
               "Sessions",
-              "Files",
-              "Credentials",
-              "Extensions",
+              "Goals",
+              "AI",
+              "Monitoring",
+              "Settings",
             ].map((tab, index) => (
               <button
                 key={tab}
