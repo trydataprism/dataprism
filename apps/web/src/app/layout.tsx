@@ -14,8 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "dataprism",
-  description: "dataprism",
+  title: {
+    template: "%s | Dataprism",
+    default: "Dataprism - Analytics Dashboard",
+  },
+  description: "Powerful analytics platform for tracking websites, events, sessions, and user behavior insights.",
 };
 
 export default function RootLayout({
