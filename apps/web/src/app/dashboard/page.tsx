@@ -1,24 +1,173 @@
 import React from "react";
-import { Globe } from "lucide-react";
+import {
+  Globe,
+  RefreshCw,
+  Plus,
+  ArrowUpRight,
+  ExternalLink,
+} from "lucide-react";
 import { Metadata } from "next";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Websites",
-  description: "Manage your tracked websites and monitor analytics for all your registered websites and applications.",
+  description:
+    "Manage your tracked websites and monitor analytics for all your registered websites and applications.",
 };
+
+// Mock data - replace with real data from your API
+const websites = [
+  {
+    id: 1,
+    name: "spadey",
+    url: "spadey.ninja",
+    views: 0,
+    change: 0,
+    icon: "globe",
+    isActive: true,
+  },
+  {
+    id: 2,
+    name: "portfolio",
+    url: "chefharun.ninja",
+    views: 0,
+    change: 0,
+    icon: "user",
+    isActive: true,
+  },
+];
 
 function page() {
   return (
-    <div className="p-8">
-      <div className="flex items-center gap-3 mb-8">
-        <Globe className="w-8 h-8 text-blue-500" />
-        <h1 className="text-3xl font-bold text-white">Websites</h1>
+    <div className="min-h-screen bg-background">
+      {/* Background Effects */}
+      <div
+        aria-hidden
+        className="z-[1] absolute inset-0 pointer-events-none isolate opacity-30 contain-strict"
+      >
+        <div className="w-[35rem] h-[80rem] -translate-y-[350px] absolute left-0 top-0 -rotate-45 rounded-full bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,hsla(0,0%,85%,.08)_0,hsla(0,0%,55%,.02)_50%,hsla(0,0%,45%,0)_80%)]" />
+        <div className="h-[80rem] absolute left-0 top-0 w-56 -rotate-45 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.06)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)] [translate:5%_-50%]" />
       </div>
-      <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
-        <p className="text-zinc-300 text-lg">Manage your tracked websites</p>
-        <p className="text-zinc-500 mt-2">
-          Monitor and track analytics for all your registered websites and applications.
-        </p>
+
+      <div className="relative z-10 p-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Globe className="w-8 h-8 text-gray-400" />
+              <ArrowUpRight className="w-5 h-5 text-gray-400" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">Websites</h1>
+              <p className="text-gray-400 text-sm">
+                Track analytics for all your websites
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-gray-400 hover:text-white hover:bg-white/10"
+            >
+              <RefreshCw className="w-5 h-5" />
+            </Button>
+            <Button className="bg-white hover:bg-gray-100 text-black">
+              <Plus className="w-4 h-4 mr-2" />
+              New Website
+            </Button>
+          </div>
+        </div>
+
+        {/* Tracking Bar */}
+        <div className="flex items-center gap-2 mb-8">
+          <Globe className="w-4 h-4 text-gray-400" />
+          <span className="text-gray-400 text-sm">
+            Tracking <span className="font-semibold text-white">2</span>{" "}
+            websites
+          </span>
+        </div>
+
+        {/* Website Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {websites.map((website) => (
+            <Card
+              key={website.id}
+              className="group bg-card/50 border-border/50 hover:border-border hover:bg-card/70 transition-all duration-200 cursor-pointer"
+            >
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {website.icon === "globe" ? (
+                      <Globe className="w-5 h-5 text-gray-400" />
+                    ) : (
+                      <div className="w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center">
+                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="font-semibold text-white text-lg">
+                        {website.name}
+                      </h3>
+                      <div className="flex items-center gap-1 text-gray-400 text-sm">
+                        <ExternalLink className="w-3 h-3" />
+                        <span>{website.url}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="space-y-3">
+                  <div className="text-2xl font-bold text-white">
+                    {website.views.toLocaleString()} views
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="space-y-2">
+                    <div className="w-full bg-gray-800 rounded-full h-1">
+                      <div
+                        className="bg-gray-500 h-1 rounded-full transition-all duration-300"
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            (website.views / 1000) * 100
+                          )}%`,
+                        }}
+                      ></div>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-400">Progress</span>
+                      <span className="text-gray-400">
+                        {website.change >= 0 ? "+" : ""}
+                        {website.change}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Empty State (when no websites) */}
+        {websites.length === 0 && (
+          <div className="text-center py-16">
+            <Globe className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">
+              No websites yet
+            </h3>
+            <p className="text-gray-400 mb-6">
+              Get started by adding your first website to track analytics
+            </p>
+            <Button className="bg-white hover:bg-gray-100 text-black">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Your First Website
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
