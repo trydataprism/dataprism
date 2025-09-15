@@ -120,9 +120,9 @@ function page() {
 
                   {/* Progress Bar */}
                   <div className="space-y-1">
-                    <div className="w-full bg-gray-800 rounded-full h-1">
+                    <div className="w-full bg-muted rounded-full h-1">
                       <div
-                        className="bg-gray-500 h-1 rounded-full transition-all duration-300"
+                        className="bg-primary h-1 rounded-full transition-all duration-300"
                         style={{
                           width: `${Math.min(
                             100,
