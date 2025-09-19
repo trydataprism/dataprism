@@ -14,6 +14,15 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 
 // Mock data - replace with real data from your API
@@ -42,6 +51,9 @@ function page() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filterOpen, setFilterOpen] = useState(false);
   const [filterBy, setFilterBy] = useState("name");
+  const [isNewWebsiteModalOpen, setIsNewWebsiteModalOpen] = useState(false);
+  const [websiteName, setWebsiteName] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
 
   const filterOptions = [
     { value: "name", label: "Name" },
@@ -151,7 +163,10 @@ function page() {
                   <List className="w-4 h-4" />
                 </button>
               </div>
-              <Button className="bg-white hover:bg-gray-100 text-black text-xs px-2.5 py-1.5">
+              <Button 
+                className="bg-white hover:bg-gray-100 text-black text-xs px-2.5 py-1.5 cursor-pointer"
+                onClick={() => setIsNewWebsiteModalOpen(true)}
+              >
                 <Plus className="w-3.5 h-3.5 mr-1" />
                 New Website
               </Button>
@@ -280,6 +295,70 @@ function page() {
             </Button>
           </div>
         )}
+
+        {/* New Website Modal */}
+        <Dialog open={isNewWebsiteModalOpen} onOpenChange={setIsNewWebsiteModalOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Add New Website</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name">
+                  Website Name
+                </Label>
+                <Input
+                  id="name"
+                  value={websiteName}
+                  onChange={(e) => setWebsiteName(e.target.value)}
+                  placeholder="My Website"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="url">
+                  Website URL
+                </Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none select-none">
+                    https://
+                  </span>
+                  <Input
+                    id="url"
+                    value={websiteUrl}
+                    onChange={(e) => setWebsiteUrl(e.target.value)}
+                    placeholder="example.com"
+                    className="pl-[70px] cursor-text"
+                  />
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                className="cursor-pointer"
+                onClick={() => {
+                  setIsNewWebsiteModalOpen(false);
+                  setWebsiteName("");
+                  setWebsiteUrl("");
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="cursor-pointer"
+                onClick={() => {
+                  // TODO: Add website logic here
+                  console.log("Adding website:", { name: websiteName, url: websiteUrl });
+                  setIsNewWebsiteModalOpen(false);
+                  setWebsiteName("");
+                  setWebsiteUrl("");
+                }}
+              >
+                Add Website
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
