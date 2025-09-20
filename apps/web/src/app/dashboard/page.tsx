@@ -10,6 +10,7 @@ import {
   Filter,
   ChevronDown,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -98,6 +99,7 @@ const websites = [
 ];
 
 function page() {
+  const router = useRouter();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filterOpen, setFilterOpen] = useState(false);
   const [filterBy, setFilterBy] = useState("name");
@@ -258,6 +260,7 @@ function page() {
                   ? "flex items-center p-4"
                   : "flex flex-col"
               }`}
+              onClick={() => router.push(`/dashboard/website/${website.id}`)}
             >
                 {viewMode === "list" ? (
                   <div className="flex items-center justify-between w-full">
