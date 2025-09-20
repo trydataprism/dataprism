@@ -1,5 +1,21 @@
 import type { Context } from "hono";
-import { WebsiteService, SessionService, AnalyticsService, RealtimeService } from "../services";
+import {
+  validateWebsite,
+  getOrCreateSession,
+  updateSessionPageViews,
+  updateSessionEventCount,
+  endSession,
+  updateHeartbeat,
+  getSession,
+  trackPageView,
+  trackEvent,
+  logError,
+  updateReferenceData,
+  updateRealTimeVisitor,
+  updateVisitorActivity,
+  deactivateVisitor,
+  getActiveVisitors,
+} from "../services";
 import {
   trackingDataSchema,
   eventDataSchema,
@@ -21,10 +37,6 @@ import {
 } from "../utils";
 
 export class TrackingController {
-  private websiteService = new WebsiteService();
-  private sessionService = new SessionService();
-  private analyticsService = new AnalyticsService();
-  private realtimeService = new RealtimeService();
 
   async trackPageView(c: Context) {
     try {
@@ -54,13 +66,13 @@ export class TrackingController {
       }
 
       // Validate website and domain
-      const website = await this.websiteService.validateWebsite(validatedData.websiteId, origin);
+      const website = await validateWebsite(validatedData.websiteId, origin);
       if (!website) {
         return sendError(c, "Website not found or domain not allowed", undefined, 404);
       }
 
       // Ensure session exists
-      await this.sessionService.getOrCreateSession(
+      await getOrCreateSession(
         validatedData.websiteId,
         validatedData.visitorId,
         validatedData.sessionId,
@@ -68,13 +80,13 @@ export class TrackingController {
       );
 
       // Track page view
-      await this.analyticsService.trackPageView(validatedData);
+      await trackPageView(validatedData);
 
       // Update reference data
-      await this.analyticsService.updateReferenceData(validatedData.websiteId, validatedData);
+      await updateReferenceData(validatedData.websiteId, validatedData);
 
       // Update real-time visitor tracking
-      await this.realtimeService.updateRealTimeVisitor(
+      await updateRealTimeVisitor(
         validatedData.websiteId,
         validatedData.visitorId,
         validatedData.sessionId,
@@ -82,7 +94,7 @@ export class TrackingController {
       );
 
       // Update session page view count
-      await this.sessionService.updateSessionPageViews(validatedData.sessionId);
+      await updateSessionPageViews(validatedData.sessionId);
 
       return sendSuccess(c, { success: true });
     } catch (error) {
@@ -103,13 +115,13 @@ export class TrackingController {
       const validatedData = validation.data;
 
       // Validate website
-      const website = await this.websiteService.validateWebsite(validatedData.websiteId);
+      const website = await validateWebsite(validatedData.websiteId);
       if (!website) {
         return sendError(c, "Website not found or inactive", undefined, 404);
       }
 
       // Ensure session exists
-      await this.sessionService.getOrCreateSession(
+      await getOrCreateSession(
         validatedData.websiteId,
         validatedData.visitorId,
         validatedData.sessionId,
@@ -117,13 +129,13 @@ export class TrackingController {
       );
 
       // Track event
-      await this.analyticsService.trackEvent(validatedData);
+      await trackEvent(validatedData);
 
       // Update reference data if new session
-      await this.analyticsService.updateReferenceData(validatedData.websiteId, validatedData);
+      await updateReferenceData(validatedData.websiteId, validatedData);
 
       // Update real-time visitor tracking
-      await this.realtimeService.updateRealTimeVisitor(
+      await updateRealTimeVisitor(
         validatedData.websiteId,
         validatedData.visitorId,
         validatedData.sessionId,
@@ -131,7 +143,7 @@ export class TrackingController {
       );
 
       // Update session event count
-      await this.sessionService.updateSessionEventCount(validatedData.sessionId);
+      await updateSessionEventCount(validatedData.sessionId);
 
       return sendSuccess(c, { success: true });
     } catch (error) {
@@ -152,10 +164,10 @@ export class TrackingController {
       const validatedData = validation.data;
 
       // End session
-      await this.sessionService.endSession(validatedData.websiteId, validatedData.sessionId);
+      await endSession(validatedData.websiteId, validatedData.sessionId);
 
       // Deactivate real-time visitor
-      await this.realtimeService.deactivateVisitor(validatedData.websiteId, validatedData.sessionId);
+      await deactivateVisitor(validatedData.websiteId, validatedData.sessionId);
 
       return sendSuccess(c, { success: true });
     } catch (error) {
@@ -176,14 +188,14 @@ export class TrackingController {
       const validatedData = validation.data;
 
       // Update session heartbeat
-      await this.sessionService.updateHeartbeat(
+      await updateHeartbeat(
         validatedData.websiteId,
         validatedData.sessionId,
         validatedData.path || "/"
       );
 
       // Update real-time visitor activity
-      await this.realtimeService.updateVisitorActivity(
+      await updateVisitorActivity(
         validatedData.websiteId,
         validatedData.sessionId,
         validatedData.path,
@@ -209,13 +221,13 @@ export class TrackingController {
       const validatedData = validation.data;
 
       // Validate website
-      const website = await this.websiteService.validateWebsite(validatedData.websiteId);
+      const website = await validateWebsite(validatedData.websiteId);
       if (!website) {
         return sendError(c, "Website not found or inactive", undefined, 404);
       }
 
       // Log error
-      await this.analyticsService.logError(validatedData);
+      await logError(validatedData);
 
       return sendSuccess(c, { success: true });
     } catch (error) {
@@ -234,13 +246,13 @@ export class TrackingController {
       }
 
       // Validate website
-      const website = await this.websiteService.validateWebsite(validation.data.websiteId);
+      const website = await validateWebsite(validation.data.websiteId);
       if (!website) {
         return sendError(c, "Website not found or inactive", undefined, 404);
       }
 
       // Get active visitors
-      const result = await this.realtimeService.getActiveVisitors(validation.data.websiteId);
+      const result = await getActiveVisitors(validation.data.websiteId);
 
       return sendSuccess(c, {
         visitors: result.visitors,
@@ -266,13 +278,13 @@ export class TrackingController {
       const validatedData = validation.data;
 
       // Validate website
-      const website = await this.websiteService.validateWebsite(validatedData.websiteId);
+      const website = await validateWebsite(validatedData.websiteId);
       if (!website) {
         return sendError(c, "Website not found or inactive", undefined, 404);
       }
 
       // Get session info
-      const session = await this.sessionService.getSession(validatedData.websiteId, validatedData.sessionId);
+      const session = await getSession(validatedData.websiteId, validatedData.sessionId);
       
       if (!session) {
         return sendError(c, "Session not found", undefined, 404);
