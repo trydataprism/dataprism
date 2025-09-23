@@ -3,10 +3,12 @@ export const CORS_CONFIG = {
     process.env.CORS_ORIGIN || "http://localhost:3001",
     "http://localhost:3000",
     "http://localhost:3001",
-    "http://localhost:5173", // Vite default
+    "http://localhost:5173",
   ],
   allowedMethods: "GET, POST, PUT, DELETE, OPTIONS, PATCH",
   allowedHeaders: "Content-Type, Authorization, X-Requested-With",
   credentials: true,
   maxAge: 86400,
 } as const;
+
+

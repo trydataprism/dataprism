@@ -2,10 +2,10 @@ import type { Context } from "hono";
 import type { z } from "zod";
 import type { ValidationError } from "../types";
 
-export function validateRequestBody<T>(
-  schema: z.ZodSchema<T>,
-  data: any
-): { success: true; data: T } | { success: false; errors: ValidationError[] } {
+export function validateRequestBody<S extends z.ZodTypeAny>(
+  schema: S,
+  data: unknown
+): { success: true; data: z.infer<S> } | { success: false; errors: ValidationError[] } {
   const result = schema.safeParse(data);
 
   if (result.success) {
@@ -21,10 +21,10 @@ export function validateRequestBody<T>(
   return { success: false, errors };
 }
 
-export function validateRequestParams<T>(
-  schema: z.ZodSchema<T>,
-  data: any
-): { success: true; data: T } | { success: false; errors: ValidationError[] } {
+export function validateRequestParams<S extends z.ZodTypeAny>(
+  schema: S,
+  data: unknown
+): { success: true; data: z.infer<S> } | { success: false; errors: ValidationError[] } {
   return validateRequestBody(schema, data);
 }
 

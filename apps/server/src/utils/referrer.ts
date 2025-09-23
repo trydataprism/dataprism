@@ -1,4 +1,4 @@
-import { REFERRER_CATEGORIES } from "../constants";
+import { REFERRER_CATEGORIES } from "../config/analytics";
 
 export function categorizeReferrer(domain: string): string {
   if (!domain) return REFERRER_CATEGORIES.DIRECT;

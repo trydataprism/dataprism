@@ -17,9 +17,6 @@
     "db:generate": "turbo -F server db:generate",
     "db:migrate": "turbo -F server db:migrate"
   },
-  "dependencies": {
-    "cmdk": "^1.1.1"
-  },
   "devDependencies": {
     "turbo": "^2.5.4"
   },

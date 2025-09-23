@@ -1,6 +1,7 @@
 import type { Context, Next } from "hono";
 import { rateLimiter } from "hono-rate-limiter";
-import { RATE_LIMITS, CORS_CONFIG } from "../constants";
+import { RATE_LIMITS } from "../config/rate-limits";
+import { CORS_CONFIG } from "../config/cors";
 
 /**
  * Rate limiting middleware factory
@@ -103,40 +104,12 @@ export const corsMiddleware = async (c: Context, next: Next) => {
 };
 
 /**
- * Request logging middleware
- */
-export const loggerMiddleware = async (c: Context, next: Next) => {
-  const start = Date.now();
-  const method = c.req.method;
-  const url = c.req.url;
-  const userAgent = c.req.header("user-agent") || "";
-  const ip = c.req.header("x-forwarded-for") || "unknown";
-
-  await next();
-
-  const duration = Date.now() - start;
-  const status = c.res.status;
-
-  console.log(
-    `${method} ${url} ${status} ${duration}ms - ${ip} - ${userAgent}`
-  );
-};
-
-/**
  * Error handling middleware
  */
 export const errorMiddleware = async (c: Context, next: Next) => {
   try {
     await next();
   } catch (error) {
-    console.error("Request error:", {
-      error: error instanceof Error ? error.message : "Unknown error",
-      stack: error instanceof Error ? error.stack : undefined,
-      method: c.req.method,
-      url: c.req.url,
-      headers: Object.fromEntries(c.req.raw.headers.entries()),
-    });
-
     if (error instanceof Error) {
       return c.json(
         {

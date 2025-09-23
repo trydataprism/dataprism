@@ -15,10 +15,10 @@ export interface ApiContext extends Context {
 export interface RequestHeaders {
   origin?: string;
   referer?: string;
-  'user-agent'?: string;
-  'x-forwarded-for'?: string;
-  'x-real-ip'?: string;
-  'cf-connecting-ip'?: string;
+  "user-agent"?: string;
+  "x-forwarded-for"?: string;
+  "x-real-ip"?: string;
+  "cf-connecting-ip"?: string;
   authorization?: string;
 }
 

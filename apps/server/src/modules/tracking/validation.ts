@@ -69,3 +69,5 @@ export type EventDataInput = z.infer<typeof eventDataSchema>;
 export type SessionEndInput = z.infer<typeof sessionEndSchema>;
 export type HeartbeatInput = z.infer<typeof heartbeatSchema>;
 export type ErrorDataInput = z.infer<typeof errorDataSchema>;
+
+

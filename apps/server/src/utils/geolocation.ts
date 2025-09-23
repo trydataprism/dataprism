@@ -1,4 +1,4 @@
-import { ANALYTICS_CONFIG } from "../constants";
+import { ANALYTICS_CONFIG } from "../config/analytics";
 import type { GeolocationData } from "../types";
 
 export async function getLocationFromIP(ip: string): Promise<Partial<GeolocationData> | null> {
