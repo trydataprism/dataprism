@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: ["better-auth"],
   images: {
-    domains: ["avatars.githubusercontent.com"],
+    domains: ["avatars.githubusercontent.com", "lh3.googleusercontent.com"],
   },
 };
 
