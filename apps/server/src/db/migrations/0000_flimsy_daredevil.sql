@@ -1,7 +1,5 @@
 CREATE TYPE "public"."verification_status" AS ENUM('PENDING', 'VERIFIED', 'EXPIRED');--> statement-breakpoint
 CREATE TYPE "public"."verification_type" AS ENUM('EMAIL_VERIFICATION', 'PASSWORD_RESET');--> statement-breakpoint
-CREATE TYPE "public"."invitation_status" AS ENUM('PENDING', 'ACCEPTED', 'DECLINED', 'EXPIRED', 'REVOKED');--> statement-breakpoint
-CREATE TYPE "public"."website_member_role" AS ENUM('OWNER', 'ADMIN', 'EDITOR', 'VIEWER');--> statement-breakpoint
 CREATE TYPE "public"."tracking_mode" AS ENUM('STANDARD', 'PRIVACY_FOCUSED');--> statement-breakpoint
 CREATE TYPE "public"."website_status" AS ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED', 'PENDING_VERIFICATION', 'DELETED');--> statement-breakpoint
 CREATE TYPE "public"."device_type" AS ENUM('DESKTOP', 'MOBILE', 'TABLET', 'UNKNOWN');--> statement-breakpoint
@@ -50,6 +48,7 @@ CREATE TABLE "user" (
 	"image" text,
 	"newsletter" boolean DEFAULT false NOT NULL,
 	"referral_source" text,
+	"default_organization_id" text,
 	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
@@ -69,41 +68,9 @@ CREATE TABLE "verification" (
 	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "website_invitations" (
-	"id" text PRIMARY KEY NOT NULL,
-	"website_id" text NOT NULL,
-	"email" text NOT NULL,
-	"role" "website_member_role" DEFAULT 'VIEWER' NOT NULL,
-	"permissions" text[],
-	"invited_by" text NOT NULL,
-	"status" "invitation_status" DEFAULT 'PENDING' NOT NULL,
-	"token" text NOT NULL,
-	"message" text,
-	"expires_at" timestamp NOT NULL,
-	"accepted_at" timestamp,
-	"accepted_by" text,
-	"revoked_at" timestamp,
-	"revoked_by" text,
-	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "website_members" (
-	"id" text PRIMARY KEY NOT NULL,
-	"website_id" text NOT NULL,
-	"user_id" text NOT NULL,
-	"role" "website_member_role" DEFAULT 'VIEWER' NOT NULL,
-	"permissions" text[],
-	"invited_by" text,
-	"is_active" boolean DEFAULT true NOT NULL,
-	"last_accessed_at" timestamp,
-	"joined_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
---> statement-breakpoint
 CREATE TABLE "websites" (
 	"id" text PRIMARY KEY NOT NULL,
+	"organization_id" text NOT NULL,
 	"user_id" text NOT NULL,
 	"domain" text NOT NULL,
 	"name" text NOT NULL,
@@ -325,14 +292,6 @@ CREATE TABLE "exports" (
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "website_invitations" ADD CONSTRAINT "website_invitations_website_id_websites_id_fk" FOREIGN KEY ("website_id") REFERENCES "public"."websites"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "website_invitations" ADD CONSTRAINT "website_invitations_invited_by_user_id_fk" FOREIGN KEY ("invited_by") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "website_invitations" ADD CONSTRAINT "website_invitations_accepted_by_user_id_fk" FOREIGN KEY ("accepted_by") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "website_invitations" ADD CONSTRAINT "website_invitations_revoked_by_user_id_fk" FOREIGN KEY ("revoked_by") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "website_members" ADD CONSTRAINT "website_members_website_id_websites_id_fk" FOREIGN KEY ("website_id") REFERENCES "public"."websites"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "website_members" ADD CONSTRAINT "website_members_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "website_members" ADD CONSTRAINT "website_members_invited_by_user_id_fk" FOREIGN KEY ("invited_by") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "websites" ADD CONSTRAINT "websites_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "events" ADD CONSTRAINT "events_website_id_websites_id_fk" FOREIGN KEY ("website_id") REFERENCES "public"."websites"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "events" ADD CONSTRAINT "events_session_id_user_sessions_id_fk" FOREIGN KEY ("session_id") REFERENCES "public"."user_sessions"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "page_views" ADD CONSTRAINT "page_views_website_id_websites_id_fk" FOREIGN KEY ("website_id") REFERENCES "public"."websites"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -357,26 +316,17 @@ CREATE INDEX "sessions_user_id_idx" ON "session" USING btree ("user_id");--> sta
 CREATE INDEX "sessions_expires_at_idx" ON "session" USING btree ("expires_at");--> statement-breakpoint
 CREATE UNIQUE INDEX "users_email_unique" ON "user" USING btree ("email");--> statement-breakpoint
 CREATE INDEX "users_created_at_idx" ON "user" USING btree ("created_at");--> statement-breakpoint
+CREATE INDEX "users_default_organization_id_idx" ON "user" USING btree ("default_organization_id");--> statement-breakpoint
 CREATE INDEX "verifications_email_idx" ON "verification" USING btree ("email");--> statement-breakpoint
 CREATE INDEX "verifications_identifier_idx" ON "verification" USING btree ("identifier");--> statement-breakpoint
 CREATE INDEX "verifications_code_idx" ON "verification" USING btree ("code");--> statement-breakpoint
 CREATE INDEX "verifications_expires_at_idx" ON "verification" USING btree ("expires_at");--> statement-breakpoint
 CREATE INDEX "verifications_type_status_idx" ON "verification" USING btree ("type","status");--> statement-breakpoint
-CREATE UNIQUE INDEX "website_invitations_website_email_unique" ON "website_invitations" USING btree ("website_id","email");--> statement-breakpoint
-CREATE INDEX "website_invitations_website_id_idx" ON "website_invitations" USING btree ("website_id");--> statement-breakpoint
-CREATE INDEX "website_invitations_email_idx" ON "website_invitations" USING btree ("email");--> statement-breakpoint
-CREATE INDEX "website_invitations_status_idx" ON "website_invitations" USING btree ("status");--> statement-breakpoint
-CREATE INDEX "website_invitations_expires_at_idx" ON "website_invitations" USING btree ("expires_at");--> statement-breakpoint
-CREATE INDEX "website_invitations_invited_by_idx" ON "website_invitations" USING btree ("invited_by");--> statement-breakpoint
-CREATE UNIQUE INDEX "website_members_website_user_unique" ON "website_members" USING btree ("website_id","user_id");--> statement-breakpoint
-CREATE INDEX "website_members_website_id_idx" ON "website_members" USING btree ("website_id");--> statement-breakpoint
-CREATE INDEX "website_members_user_id_idx" ON "website_members" USING btree ("user_id");--> statement-breakpoint
-CREATE INDEX "website_members_role_idx" ON "website_members" USING btree ("role");--> statement-breakpoint
-CREATE INDEX "website_members_is_active_idx" ON "website_members" USING btree ("is_active");--> statement-breakpoint
-CREATE UNIQUE INDEX "websites_user_domain_unique" ON "websites" USING btree ("user_id","domain");--> statement-breakpoint
+CREATE UNIQUE INDEX "websites_org_domain_unique" ON "websites" USING btree ("organization_id","domain");--> statement-breakpoint
 CREATE UNIQUE INDEX "websites_tracking_id_unique" ON "websites" USING btree ("tracking_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "websites_public_key_unique" ON "websites" USING btree ("public_key");--> statement-breakpoint
 CREATE UNIQUE INDEX "websites_secret_key_unique" ON "websites" USING btree ("secret_key");--> statement-breakpoint
+CREATE INDEX "websites_organization_id_idx" ON "websites" USING btree ("organization_id");--> statement-breakpoint
 CREATE INDEX "websites_user_id_idx" ON "websites" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "websites_domain_idx" ON "websites" USING btree ("domain");--> statement-breakpoint
 CREATE INDEX "websites_status_idx" ON "websites" USING btree ("status");--> statement-breakpoint

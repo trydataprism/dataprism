@@ -3,7 +3,7 @@
 // === CORE SCHEMAS ===
 export * from "./auth";
 export * from "./website";
-export * from "./team";
+export * from "./organization";
 export * from "./analytics";
 export * from "./reference";
 export * from "./notifications";
@@ -13,7 +13,11 @@ export * from "./monitoring";
 // Import all tables for establishing relationships
 import { user } from "./auth";
 import { websites } from "./website";
-import { websiteMembers, websiteInvitations } from "./team";
+import {
+  organizations,
+  organizationMembers,
+  organizationInvitations,
+} from "./organization";
 import { pageViews, userSessions, events } from "./analytics";
 import {
   utmCampaigns,
@@ -27,7 +31,11 @@ import { dataExports } from "./utility";
 
 // Export grouped table collections for easier imports
 export const authTables = { user };
-export const teamTables = { websiteMembers, websiteInvitations };
+export const organizationTables = {
+  organizations,
+  organizationMembers,
+  organizationInvitations,
+};
 export const websiteTables = { websites };
 export const analyticsTables = { pageViews, userSessions, events };
 export const referenceDataTables = {
@@ -36,7 +44,6 @@ export const referenceDataTables = {
   deviceInfo,
   locationData,
 };
-
 
 export const notificationTables = {
   alerts,
@@ -48,7 +55,6 @@ export const monitoringTables = {
   realTimeVisitors,
 };
 
-
 export const utilityTables = {
   dataExports,
 };
@@ -57,8 +63,9 @@ export const utilityTables = {
 export const allTables = {
   user,
   websites,
-  websiteMembers,
-  websiteInvitations,
+  organizations,
+  organizationMembers,
+  organizationInvitations,
   pageViews,
   userSessions,
   events,
@@ -76,8 +83,9 @@ export const allTables = {
 // Type definitions for better TypeScript support
 export type UserTable = typeof user;
 export type WebsiteTable = typeof websites;
-export type WebsiteMemberTable = typeof websiteMembers;
-export type WebsiteInvitationTable = typeof websiteInvitations;
+export type OrganizationTable = typeof organizations;
+export type OrganizationMemberTable = typeof organizationMembers;
+export type OrganizationInvitationTable = typeof organizationInvitations;
 export type PageViewTable = typeof pageViews;
 export type SessionTable = typeof userSessions;
 export type EventTable = typeof events;

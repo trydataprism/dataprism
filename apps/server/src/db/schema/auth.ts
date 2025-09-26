@@ -31,6 +31,8 @@ export const user = pgTable(
     image: text("image"),
     newsletter: boolean("newsletter").notNull().default(false),
     referralSource: text("referral_source"),
+    // Default organization for the user (will be set after organization creation)
+    defaultOrganizationId: text("default_organization_id"),
     createdAt: timestamp("created_at", { mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -41,6 +43,7 @@ export const user = pgTable(
   (table) => [
     uniqueIndex("users_email_unique").on(table.email),
     index("users_created_at_idx").on(table.createdAt),
+    index("users_default_organization_id_idx").on(table.defaultOrganizationId),
   ]
 );
 

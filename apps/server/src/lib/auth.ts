@@ -9,6 +9,7 @@ import {
   sendPasswordResetLinkEmail,
   sendEmailVerificationLinkEmail,
 } from "./email";
+import { createDefaultOrganizationForUser } from "../modules/organization/service";
 
 // Email sending handled in ./email
 
@@ -144,6 +145,29 @@ export const auth = betterAuth({
     process.env.CORS_ORIGIN || "http://localhost:3001",
     "http://localhost:3000", // Allow same-origin requests
   ],
+
+  // Callbacks for automatic organization creation
+  callbacks: {
+    async afterSignUp({
+      user,
+      isEmailVerified,
+    }: {
+      user: any;
+      isEmailVerified: boolean;
+    }) {
+      try {
+        // Only create organization if email is verified or if it's OAuth (no email verification needed)
+        if (isEmailVerified || user.emailVerified) {
+          console.log(`Creating default organization for user: ${user.id}`);
+          await createDefaultOrganizationForUser(user.id, user.name);
+          console.log(`Default organization created for user: ${user.id}`);
+        }
+      } catch (error) {
+        console.error("Failed to create default organization:", error);
+        // Don't throw error to avoid breaking the sign-up process
+      }
+    },
+  },
 });
 
 export type Session = typeof auth.$Infer.Session;

@@ -7,6 +7,7 @@ import {
 } from "./lib/middleware";
 import { authRouter } from "./modules/auth/routes";
 import { tracking } from "./modules/tracking/routes";
+import { organizationRouter } from "./modules/organization/routes";
 
 const app = new Hono();
 
@@ -20,6 +21,7 @@ app.use("/api/*", generalRateLimit);
 // Routes
 app.route("/api/auth", authRouter);
 app.route("/api/track", tracking);
+app.route("/api/organizations", organizationRouter);
 
 // Health check
 app.get("/", (c) => {
