@@ -256,91 +256,87 @@ function page() {
             <Card
               key={website.id}
               className={`group bg-card/50 border-border/50 hover:border-border hover:bg-card/70 transition-all duration-200 cursor-pointer ${
-                viewMode === "list"
-                  ? "flex items-center p-4"
-                  : "flex flex-col"
+                viewMode === "list" ? "flex items-center p-4" : "flex flex-col"
               }`}
               onClick={() => router.push(`/dashboard/website/${website.id}`)}
             >
-                {viewMode === "list" ? (
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center gap-3">
-                      <div>
-                        <h3 className="font-semibold text-white text-base">
-                          {website.name}
-                        </h3>
-                        <div className="flex items-center gap-1 text-gray-400 text-xs">
-                          <span>{website.url}</span>
-                          <ArrowUpRight className="w-3 h-3 text-gray-400 group-hover:text-white transition-colors" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-6">
-                      <div className="text-right">
-                        <div className="text-sm font-bold text-white">
-                          {website.views.toLocaleString()}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div
-                          className={`text-sm font-medium ${
-                            website.change >= 0
-                              ? "text-green-400"
-                              : "text-red-400"
-                          }`}
-                        >
-                          {website.change >= 0 ? "+" : ""}
-                          {website.change}%
-                        </div>
-                        <div className="text-xs text-gray-400">change</div>
+              {viewMode === "list" ? (
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-3">
+                    <div>
+                      <h3 className="font-semibold text-white text-base">
+                        {website.name}
+                      </h3>
+                      <div className="flex items-center gap-1 text-gray-400 text-xs">
+                        <span>{website.url}</span>
+                        <ArrowUpRight className="w-3 h-3 text-gray-400 group-hover:text-white transition-colors" />
                       </div>
                     </div>
                   </div>
-                ) : (
-                  <CardHeader className="pb-2 pt-4 px-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold text-white text-base">
-                          {website.name}
-                        </h3>
-                        <div className="flex items-center gap-1 text-gray-400 text-xs">
-                          <span>{website.url}</span>
-                          <ArrowUpRight className="w-3 h-3 text-gray-400 group-hover:text-white transition-colors" />
-                        </div>
+                  <div className="flex items-center gap-6">
+                    <div className="text-right">
+                      <div className="text-sm font-bold text-white">
+                        {website.views.toLocaleString()}
                       </div>
-                      {website.change !== 0 && (
-                        <div
-                          className={`flex items-center gap-1 text-xs font-medium ${
-                            website.change > 0
-                              ? "text-green-400"
-                              : "text-red-400"
-                          }`}
-                        >
-                          {website.change > 0 ? (
-                            <ArrowUpRight className="w-3 h-3" />
-                          ) : (
-                            <ArrowUpRight className="w-3 h-3 rotate-180" />
-                          )}
-                          <span>{Math.abs(website.change)}%</span>
-                        </div>
-                      )}
                     </div>
-                  </CardHeader>
-                )}
-                {viewMode === "grid" && (
-                  <CardContent className="pt-0 pb-4 px-4 flex-1 flex flex-col justify-between">
-                    <div className="text-sm font-bold text-white">
-                      {website.views.toLocaleString()}
+                    <div className="text-right">
+                      <div
+                        className={`text-sm font-medium ${
+                          website.change >= 0
+                            ? "text-green-400"
+                            : "text-red-400"
+                        }`}
+                      >
+                        {website.change >= 0 ? "+" : ""}
+                        {website.change}%
+                      </div>
+                      <div className="text-xs text-gray-400">change</div>
                     </div>
-                    <div className="mt-1">
-                      <ChartLineInteractive
-                        data={website.chartData}
-                        className="border-0 bg-transparent p-0"
-                      />
+                  </div>
+                </div>
+              ) : (
+                <CardHeader className="pb-2 pt-4 px-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-white text-base">
+                        {website.name}
+                      </h3>
+                      <div className="flex items-center gap-1 text-gray-400 text-xs">
+                        <span>{website.url}</span>
+                        <ArrowUpRight className="w-3 h-3 text-gray-400 group-hover:text-white transition-colors" />
+                      </div>
                     </div>
-                  </CardContent>
-                )}
-              </Card>
+                    {website.change !== 0 && (
+                      <div
+                        className={`flex items-center gap-1 text-xs font-medium ${
+                          website.change > 0 ? "text-green-400" : "text-red-400"
+                        }`}
+                      >
+                        {website.change > 0 ? (
+                          <ArrowUpRight className="w-3 h-3" />
+                        ) : (
+                          <ArrowUpRight className="w-3 h-3 rotate-180" />
+                        )}
+                        <span>{Math.abs(website.change)}%</span>
+                      </div>
+                    )}
+                  </div>
+                </CardHeader>
+              )}
+              {viewMode === "grid" && (
+                <CardContent className="pt-0 pb-4 px-4 flex-1 flex flex-col justify-between">
+                  <div className="text-sm font-bold text-white">
+                    {website.views.toLocaleString()}
+                  </div>
+                  <div className="mt-1">
+                    <ChartLineInteractive
+                      data={website.chartData}
+                      className="border-0 bg-transparent p-0"
+                    />
+                  </div>
+                </CardContent>
+              )}
+            </Card>
           ))}
         </div>
 
