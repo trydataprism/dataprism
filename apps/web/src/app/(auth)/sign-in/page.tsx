@@ -36,7 +36,9 @@ export default function SignInPage() {
             if (error.error.message?.includes("EMAIL_NOT_VERIFIED")) {
               toast.error("Please verify your email before signing in");
               router.push(
-                `/enter-code?email=${encodeURIComponent(value.email)}&type=verification`
+                `/enter-code?email=${encodeURIComponent(
+                  value.email
+                )}&type=verification`
               );
             } else {
               toast.error("Invalid email or password");
@@ -77,14 +79,14 @@ export default function SignInPage() {
           }}
           className="space-y-4"
         >
-          <form.Field 
+          <form.Field
             name="email"
             validators={{
               onChange: ({ value }) => {
                 if (!value) return "Email is required";
                 if (!/\S+@\S+\.\S+/.test(value)) return "Invalid email address";
                 return undefined;
-              }
+              },
             }}
           >
             {(field) => (
@@ -111,13 +113,13 @@ export default function SignInPage() {
             )}
           </form.Field>
 
-          <form.Field 
+          <form.Field
             name="password"
             validators={{
               onChange: ({ value }) => {
                 if (!value) return "Password is required";
                 return undefined;
-              }
+              },
             }}
           >
             {(field) => (
