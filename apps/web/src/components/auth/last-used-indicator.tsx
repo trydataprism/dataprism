@@ -54,7 +54,7 @@ export function LastUsedIndicator({ className }: LastUsedIndicatorProps) {
   return (
     <div
       className={cn(
-        "absolute -top-2 -right-2 px-2 py-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-md text-xs text-white/80 transition-all duration-300 group-hover:opacity-0",
+        "absolute -top-2 -right-2 px-2 py-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-md text-xs text-white/80 transition-all duration-300 group-hover:opacity-0 pointer-events-none",
         className
       )}
     >
