@@ -1,5 +1,7 @@
 CREATE TYPE "public"."verification_status" AS ENUM('PENDING', 'VERIFIED', 'EXPIRED');--> statement-breakpoint
 CREATE TYPE "public"."verification_type" AS ENUM('EMAIL_VERIFICATION', 'PASSWORD_RESET');--> statement-breakpoint
+CREATE TYPE "public"."invitation_status" AS ENUM('PENDING', 'ACCEPTED', 'DECLINED', 'EXPIRED', 'REVOKED');--> statement-breakpoint
+CREATE TYPE "public"."organization_member_role" AS ENUM('OWNER', 'ADMIN', 'MEMBER', 'VIEWER');--> statement-breakpoint
 CREATE TYPE "public"."tracking_mode" AS ENUM('STANDARD', 'PRIVACY_FOCUSED');--> statement-breakpoint
 CREATE TYPE "public"."website_status" AS ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED', 'PENDING_VERIFICATION', 'DELETED');--> statement-breakpoint
 CREATE TYPE "public"."device_type" AS ENUM('DESKTOP', 'MOBILE', 'TABLET', 'UNKNOWN');--> statement-breakpoint
@@ -64,6 +66,49 @@ CREATE TABLE "verification" (
 	"attempts" integer DEFAULT 0 NOT NULL,
 	"expires_at" timestamp NOT NULL,
 	"verified_at" timestamp,
+	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "organization_invitations" (
+	"id" text PRIMARY KEY NOT NULL,
+	"organization_id" text NOT NULL,
+	"email" text NOT NULL,
+	"role" "organization_member_role" DEFAULT 'MEMBER' NOT NULL,
+	"permissions" text[],
+	"invited_by" text NOT NULL,
+	"status" "invitation_status" DEFAULT 'PENDING' NOT NULL,
+	"token" text NOT NULL,
+	"message" text,
+	"expires_at" timestamp NOT NULL,
+	"accepted_at" timestamp,
+	"accepted_by" text,
+	"revoked_at" timestamp,
+	"revoked_by" text,
+	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "organization_members" (
+	"id" text PRIMARY KEY NOT NULL,
+	"organization_id" text NOT NULL,
+	"user_id" text NOT NULL,
+	"role" "organization_member_role" DEFAULT 'MEMBER' NOT NULL,
+	"permissions" text[],
+	"invited_by" text,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"last_accessed_at" timestamp,
+	"joined_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "organizations" (
+	"id" text PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"slug" text NOT NULL,
+	"owner_id" text NOT NULL,
+	"is_active" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
@@ -292,6 +337,8 @@ CREATE TABLE "exports" (
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "organization_invitations" ADD CONSTRAINT "organization_invitations_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "organization_members" ADD CONSTRAINT "organization_members_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "events" ADD CONSTRAINT "events_website_id_websites_id_fk" FOREIGN KEY ("website_id") REFERENCES "public"."websites"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "events" ADD CONSTRAINT "events_session_id_user_sessions_id_fk" FOREIGN KEY ("session_id") REFERENCES "public"."user_sessions"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "page_views" ADD CONSTRAINT "page_views_website_id_websites_id_fk" FOREIGN KEY ("website_id") REFERENCES "public"."websites"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -322,6 +369,20 @@ CREATE INDEX "verifications_identifier_idx" ON "verification" USING btree ("iden
 CREATE INDEX "verifications_code_idx" ON "verification" USING btree ("code");--> statement-breakpoint
 CREATE INDEX "verifications_expires_at_idx" ON "verification" USING btree ("expires_at");--> statement-breakpoint
 CREATE INDEX "verifications_type_status_idx" ON "verification" USING btree ("type","status");--> statement-breakpoint
+CREATE UNIQUE INDEX "organization_invitations_org_email_unique" ON "organization_invitations" USING btree ("organization_id","email");--> statement-breakpoint
+CREATE INDEX "organization_invitations_organization_id_idx" ON "organization_invitations" USING btree ("organization_id");--> statement-breakpoint
+CREATE INDEX "organization_invitations_email_idx" ON "organization_invitations" USING btree ("email");--> statement-breakpoint
+CREATE INDEX "organization_invitations_status_idx" ON "organization_invitations" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "organization_invitations_expires_at_idx" ON "organization_invitations" USING btree ("expires_at");--> statement-breakpoint
+CREATE INDEX "organization_invitations_invited_by_idx" ON "organization_invitations" USING btree ("invited_by");--> statement-breakpoint
+CREATE UNIQUE INDEX "organization_members_org_user_unique" ON "organization_members" USING btree ("organization_id","user_id");--> statement-breakpoint
+CREATE INDEX "organization_members_organization_id_idx" ON "organization_members" USING btree ("organization_id");--> statement-breakpoint
+CREATE INDEX "organization_members_user_id_idx" ON "organization_members" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "organization_members_role_idx" ON "organization_members" USING btree ("role");--> statement-breakpoint
+CREATE INDEX "organization_members_is_active_idx" ON "organization_members" USING btree ("is_active");--> statement-breakpoint
+CREATE UNIQUE INDEX "organizations_slug_unique" ON "organizations" USING btree ("slug");--> statement-breakpoint
+CREATE INDEX "organizations_owner_id_idx" ON "organizations" USING btree ("owner_id");--> statement-breakpoint
+CREATE INDEX "organizations_is_active_idx" ON "organizations" USING btree ("is_active");--> statement-breakpoint
 CREATE UNIQUE INDEX "websites_org_domain_unique" ON "websites" USING btree ("organization_id","domain");--> statement-breakpoint
 CREATE UNIQUE INDEX "websites_tracking_id_unique" ON "websites" USING btree ("tracking_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "websites_public_key_unique" ON "websites" USING btree ("public_key");--> statement-breakpoint
@@ -368,11 +429,4 @@ CREATE UNIQUE INDEX "real_time_visitors_website_visitor_unique" ON "real_time_vi
 CREATE INDEX "real_time_visitors_website_id_idx" ON "real_time_visitors" USING btree ("website_id");--> statement-breakpoint
 CREATE INDEX "real_time_visitors_last_activity_idx" ON "real_time_visitors" USING btree ("last_activity");--> statement-breakpoint
 CREATE INDEX "real_time_visitors_is_active_idx" ON "real_time_visitors" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "real_time_visitors_current_path_idx" ON "real_time_visitors" USING btree ("current_path");--> statement-breakpoint
-CREATE MATERIALIZED VIEW "public"."daily_website_stats" AS (select "website_id", DATE("timestamp") as "date", COUNT("id") as "page_views", COUNT(DISTINCT "visitor_id") as "unique_visitors", COUNT(DISTINCT "session_id") as "sessions" from "page_views" group by "page_views"."website_id", DATE("page_views"."timestamp"));--> statement-breakpoint
-CREATE MATERIALIZED VIEW "public"."device_stats" AS (select "website_id", "device", "browser", "os", COUNT("id") as "page_views", COUNT(DISTINCT "visitor_id") as "unique_visitors", COUNT(DISTINCT "session_id") as "sessions" from "page_views" where "page_views"."timestamp" >= NOW() - INTERVAL '30 days' group by "page_views"."website_id", "page_views"."device", "page_views"."browser", "page_views"."os");--> statement-breakpoint
-CREATE MATERIALIZED VIEW "public"."event_stats" AS (select "website_id", "event_type", "event_name", COUNT("id") as "event_count", COUNT(DISTINCT "visitor_id") as "unique_visitors" from "events" where "events"."timestamp" >= NOW() - INTERVAL '30 days' group by "events"."website_id", "events"."event_type", "events"."event_name");--> statement-breakpoint
-CREATE MATERIALIZED VIEW "public"."geo_stats" AS (select "website_id", "country", COUNT("id") as "page_views", COUNT(DISTINCT "visitor_id") as "unique_visitors", COUNT(DISTINCT "session_id") as "sessions" from "page_views" where "page_views"."timestamp" >= NOW() - INTERVAL '30 days' group by "page_views"."website_id", "page_views"."country");--> statement-breakpoint
-CREATE MATERIALIZED VIEW "public"."hourly_website_stats" AS (select "website_id", DATE_TRUNC('hour', "timestamp") as "hour", COUNT("id") as "page_views", COUNT(DISTINCT "visitor_id") as "unique_visitors", COUNT(DISTINCT "session_id") as "sessions" from "page_views" group by "page_views"."website_id", DATE_TRUNC('hour', "page_views"."timestamp"));--> statement-breakpoint
-CREATE MATERIALIZED VIEW "public"."popular_pages" AS (select "website_id", "path", "title", COUNT("id") as "page_views", COUNT(DISTINCT "visitor_id") as "unique_visitors", COUNT(DISTINCT "session_id") as "sessions" from "page_views" where "page_views"."timestamp" >= NOW() - INTERVAL '30 days' group by "page_views"."website_id", "page_views"."path", "page_views"."title" order by COUNT("page_views"."id") DESC);--> statement-breakpoint
-CREATE MATERIALIZED VIEW "public"."top_referrers" AS (select "website_id", "referrer", COUNT("id") as "page_views", COUNT(DISTINCT "visitor_id") as "unique_visitors", COUNT(DISTINCT "session_id") as "sessions" from "page_views" where "page_views"."referrer" IS NOT NULL AND "page_views"."timestamp" >= NOW() - INTERVAL '30 days' group by "page_views"."website_id", "page_views"."referrer" order by COUNT("page_views"."id") DESC);
+CREATE INDEX "real_time_visitors_current_path_idx" ON "real_time_visitors" USING btree ("current_path");

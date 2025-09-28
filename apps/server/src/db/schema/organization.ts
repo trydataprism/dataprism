@@ -34,16 +34,9 @@ export const organizations = pgTable(
     id: text("id").primaryKey().notNull(),
     name: text("name").notNull(),
     slug: text("slug").notNull(), // URL-friendly version of name
-    description: text("description"),
-    logo: text("logo"),
 
     // Owner information (will be set via migration)
     ownerId: text("owner_id").notNull(),
-
-    // Settings
-    timezone: text("timezone").default("UTC").notNull(),
-    currency: text("currency").default("USD").notNull(),
-    language: text("language").default("en").notNull(),
 
     // Status
     isActive: boolean("is_active").default(true).notNull(),

@@ -13,23 +13,14 @@ import { nanoid } from "nanoid";
 
 export interface CreateOrganizationData {
   name: string;
-  description?: string;
   ownerId: string;
-  timezone?: string;
-  currency?: string;
-  language?: string;
 }
 
 export interface OrganizationWithMembers {
   id: string;
   name: string;
   slug: string;
-  description: string | null;
-  logo: string | null;
   ownerId: string;
-  timezone: string;
-  currency: string;
-  language: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -58,11 +49,7 @@ export async function createOrganization(
       id: organizationId,
       name: data.name,
       slug,
-      description: data.description || null,
       ownerId: data.ownerId,
-      timezone: data.timezone || "UTC",
-      currency: data.currency || "USD",
-      language: data.language || "en",
     })
     .returning();
 
@@ -211,7 +198,6 @@ export async function createDefaultOrganizationForUser(
 
   return createOrganization({
     name: defaultName,
-    description: `Personal organization for ${userName}`,
     ownerId: userId,
   });
 }

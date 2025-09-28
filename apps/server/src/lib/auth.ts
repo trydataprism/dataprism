@@ -146,26 +146,22 @@ export const auth = betterAuth({
     "http://localhost:3000", // Allow same-origin requests
   ],
 
-  // Callbacks for automatic organization creation
-  callbacks: {
-    async afterSignUp({
-      user,
-      isEmailVerified,
-    }: {
-      user: any;
-      isEmailVerified: boolean;
-    }) {
-      try {
-        // Only create organization if email is verified or if it's OAuth (no email verification needed)
-        if (isEmailVerified || user.emailVerified) {
-          console.log(`Creating default organization for user: ${user.id}`);
-          await createDefaultOrganizationForUser(user.id, user.name);
-          console.log(`Default organization created for user: ${user.id}`);
-        }
-      } catch (error) {
-        console.error("Failed to create default organization:", error);
-        // Don't throw error to avoid breaking the sign-up process
-      }
+  // Database hooks for automatic organization creation
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user: any, context: any) => {
+          try {
+            await createDefaultOrganizationForUser(user.id, user.name);
+          } catch (error) {
+            console.error(
+              "Failed to create default organization in database hook:",
+              error
+            );
+            // Don't throw error to avoid breaking the user creation process
+          }
+        },
+      },
     },
   },
 });
