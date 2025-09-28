@@ -72,3 +72,26 @@ export async function isWebsiteActive(websiteId: string): Promise<boolean> {
   const website = await getWebsiteById(websiteId);
   return website?.isActive || false;
 }
+
+export async function getWebsitesByOrganizationId(
+  organizationId: string
+): Promise<Website[]> {
+  /**
+   * Retrieve all active websites for a specific organization.
+   *
+   * @param organizationId The organization identifier.
+   * @returns Array of active websites for the organization.
+   */
+  const websitesList = await db
+    .select()
+    .from(websites)
+    .where(
+      and(
+        eq(websites.organizationId, organizationId),
+        eq(websites.isActive, true)
+      )
+    )
+    .orderBy(websites.createdAt);
+
+  return websitesList;
+}

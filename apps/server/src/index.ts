@@ -8,6 +8,7 @@ import {
 import { authRouter } from "./modules/auth/routes";
 import { tracking } from "./modules/tracking/routes";
 import { organizationRouter } from "./modules/organization/routes";
+import { websiteRouter } from "./modules/website/routes";
 
 const app = new Hono();
 
@@ -22,6 +23,7 @@ app.use("/api/*", generalRateLimit);
 app.route("/api/auth", authRouter);
 app.route("/api/track", tracking);
 app.route("/api/organizations", organizationRouter);
+app.route("/api/websites", websiteRouter);
 
 // Health check
 app.get("/", (c) => {

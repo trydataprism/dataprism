@@ -19,9 +19,13 @@ interface UserSession {
 
 interface DashboardHeaderProps {
   session: UserSession | null;
+  onOrganizationChange?: (organizationId: string) => void;
 }
 
-export function DashboardHeader({ session }: DashboardHeaderProps) {
+export function DashboardHeader({
+  session,
+  onOrganizationChange,
+}: DashboardHeaderProps) {
   const [isCommandOpen, setIsCommandOpen] = useState(false);
 
   return (
@@ -31,7 +35,7 @@ export function DashboardHeader({ session }: DashboardHeaderProps) {
         <div className="flex items-center gap-3">
           <Logo />
           <div className="w-px h-4 bg-zinc-700/60"></div>
-          <TeamSelector />
+          <TeamSelector onOrganizationChange={onOrganizationChange} />
           <div className="w-px h-3 bg-zinc-700/60"></div>
           <ProjectSelector />
         </div>
@@ -46,9 +50,9 @@ export function DashboardHeader({ session }: DashboardHeaderProps) {
       <Navigation />
 
       {/* Command Palette */}
-      <CommandPalette 
-        isOpen={isCommandOpen} 
-        onClose={() => setIsCommandOpen(false)} 
+      <CommandPalette
+        isOpen={isCommandOpen}
+        onClose={() => setIsCommandOpen(false)}
       />
     </>
   );
