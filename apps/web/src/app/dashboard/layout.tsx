@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import { DashboardHeader } from "@/components/header/dashboard-header";
 import { LoadingState } from "@/components/ui/loading-state";
@@ -10,17 +11,25 @@ import {
   OrganizationProvider,
   useOrganizationContext,
 } from "@/contexts/organization-context";
-import { useDefaultOrganization } from "@/hooks/use-organizations";
+import {
+  useDefaultOrganization,
+  useCurrentOrganization,
+} from "@/hooks/use-organizations";
+import { useWebsitesByOrganization } from "@/hooks/use-websites";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 function DashboardContent({ children }: DashboardLayoutProps) {
+  const router = useRouter();
   const { data: session, isPending, error } = useSession();
   const { setSelectedOrganizationId } = useOrganizationContext();
   const { organization: defaultOrganization, isLoading: isLoadingOrg } =
     useDefaultOrganization();
+  const currentOrganization = useCurrentOrganization();
+  const { isLoading: isLoadingWebsites, error: websitesError } =
+    useWebsitesByOrganization(currentOrganization?.id || null);
 
   if (isPending) {
     return <LoadingState message="Loading your dashboard..." />;
@@ -44,6 +53,23 @@ function DashboardContent({ children }: DashboardLayoutProps) {
   // Show loading until organization is loaded
   if (isLoadingOrg || !defaultOrganization) {
     return <LoadingState message="Loading your organization..." />;
+  }
+
+  // Show loading until websites are loaded
+  if (isLoadingWebsites) {
+    return <LoadingState message="Loading your websites..." />;
+  }
+
+  // Show error if websites failed to load
+  if (websitesError) {
+    return (
+      <ErrorState
+        message="We encountered an issue while loading your websites"
+        error={websitesError}
+        onRetry={() => window.location.reload()}
+        onGoHome={() => router.push("/dashboard")}
+      />
+    );
   }
 
   return (
