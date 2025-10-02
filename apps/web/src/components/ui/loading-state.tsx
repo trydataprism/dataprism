@@ -44,8 +44,8 @@ export function LoadingState({
             <Image
               src="/dark_logo.svg"
               alt="Dataprism"
-              width={32}
-              height={32}
+              width={20}
+              height={20}
               className="opacity-90"
             />
             <h1 className="text-2xl font-bold text-white">DATAPRISM</h1>

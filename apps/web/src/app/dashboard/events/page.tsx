@@ -1,5 +1,13 @@
 import React from "react";
-import { Activity, Filter, Download, Search, Calendar, Clock, Eye } from "lucide-react";
+import {
+  Activity,
+  Filter,
+  Download,
+  Search,
+  Calendar,
+  Clock,
+  Eye,
+} from "lucide-react";
 import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +15,8 @@ import { Input } from "@/components/ui/input";
 
 export const metadata: Metadata = {
   title: "Events",
-  description: "View analytics events and track user interactions and custom events across your websites.",
+  description:
+    "View analytics events and track user interactions and custom events across your websites.",
 };
 
 // Mock data - replace with real data from your API
@@ -43,13 +52,12 @@ const events = [
 
 export default function EventsPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       {/* Background Effects */}
       <div
         aria-hidden
         className="z-[1] absolute inset-0 pointer-events-none isolate opacity-30 contain-strict"
       >
-        <div className="w-[35rem] h-[80rem] -translate-y-[350px] absolute left-0 top-0 -rotate-45 rounded-full bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,hsla(0,0%,85%,.08)_0,hsla(0,0%,55%,.02)_50%,hsla(0,0%,45%,0)_80%)]" />
         <div className="h-[80rem] absolute left-0 top-0 w-56 -rotate-45 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.06)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)] [translate:5%_-50%]" />
       </div>
 
@@ -87,13 +95,15 @@ export default function EventsPage() {
               <div className="flex items-center gap-2">
                 <Activity className="w-3.5 h-3.5 text-gray-400" />
                 <span className="text-gray-400 text-xs">
-                  <span className="font-semibold text-white">3</span> events today
+                  <span className="font-semibold text-white">3</span> events
+                  today
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <Eye className="w-3.5 h-3.5 text-gray-400" />
                 <span className="text-gray-400 text-xs">
-                  <span className="font-semibold text-white">1.2k</span> total views
+                  <span className="font-semibold text-white">1.2k</span> total
+                  views
                 </span>
               </div>
             </div>
@@ -160,7 +170,8 @@ export default function EventsPage() {
               No events yet
             </h3>
             <p className="text-gray-400 mb-4 text-sm">
-              Events will appear here once users start interacting with your websites
+              Events will appear here once users start interacting with your
+              websites
             </p>
           </div>
         )}

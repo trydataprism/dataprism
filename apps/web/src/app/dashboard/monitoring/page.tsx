@@ -1,12 +1,21 @@
 import React from "react";
-import { Monitor, AlertTriangle, CheckCircle, Clock, Server, Activity, Zap } from "lucide-react";
+import {
+  Monitor,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  Server,
+  Activity,
+  Zap,
+} from "lucide-react";
 import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Monitoring",
-  description: "Monitor system health, uptime, performance metrics, and alerts.",
+  description:
+    "Monitor system health, uptime, performance metrics, and alerts.",
 };
 
 // Mock data - replace with real data from your API
@@ -66,13 +75,12 @@ const alerts = [
 
 export default function MonitoringPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       {/* Background Effects */}
       <div
         aria-hidden
         className="z-[1] absolute inset-0 pointer-events-none isolate opacity-30 contain-strict"
       >
-        <div className="w-[35rem] h-[80rem] -translate-y-[350px] absolute left-0 top-0 -rotate-45 rounded-full bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,hsla(0,0%,85%,.08)_0,hsla(0,0%,55%,.02)_50%,hsla(0,0%,45%,0)_80%)]" />
         <div className="h-[80rem] absolute left-0 top-0 w-56 -rotate-45 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.06)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)] [translate:5%_-50%]" />
       </div>
 
@@ -110,7 +118,8 @@ export default function MonitoringPage() {
               <div className="flex items-center gap-2">
                 <Server className="w-3.5 h-3.5 text-gray-400" />
                 <span className="text-gray-400 text-xs">
-                  <span className="font-semibold text-white">2</span> websites monitored
+                  <span className="font-semibold text-white">2</span> websites
+                  monitored
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -124,7 +133,8 @@ export default function MonitoringPage() {
               <div className="flex items-center gap-1">
                 <AlertTriangle className="w-3.5 h-3.5 text-yellow-400" />
                 <span className="text-gray-400 text-xs">
-                  <span className="font-semibold text-white">1</span> active alert
+                  <span className="font-semibold text-white">1</span> active
+                  alert
                 </span>
               </div>
             </div>
@@ -144,9 +154,15 @@ export default function MonitoringPage() {
                     {metric.name}
                   </h3>
                   <div className="flex items-center gap-1">
-                    {metric.status === "healthy" && <CheckCircle className="w-3 h-3 text-green-400" />}
-                    {metric.status === "warning" && <AlertTriangle className="w-3 h-3 text-yellow-400" />}
-                    {metric.status === "error" && <AlertTriangle className="w-3 h-3 text-red-400" />}
+                    {metric.status === "healthy" && (
+                      <CheckCircle className="w-3 h-3 text-green-400" />
+                    )}
+                    {metric.status === "warning" && (
+                      <AlertTriangle className="w-3 h-3 text-yellow-400" />
+                    )}
+                    {metric.status === "error" && (
+                      <AlertTriangle className="w-3 h-3 text-red-400" />
+                    )}
                   </div>
                 </div>
                 <div className="text-2xl font-bold text-white mb-1">
@@ -154,13 +170,15 @@ export default function MonitoringPage() {
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-400">{metric.website}</span>
-                  <span className={`${
-                    metric.trend.startsWith('+') 
-                      ? 'text-red-400' 
-                      : metric.trend.startsWith('-')
-                      ? 'text-green-400'
-                      : 'text-gray-400'
-                  }`}>
+                  <span
+                    className={`${
+                      metric.trend.startsWith("+")
+                        ? "text-red-400"
+                        : metric.trend.startsWith("-")
+                        ? "text-green-400"
+                        : "text-gray-400"
+                    }`}
+                  >
                     {metric.trend}
                   </span>
                 </div>
@@ -171,7 +189,9 @@ export default function MonitoringPage() {
 
         {/* Alerts */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-white mb-4">Recent Alerts</h2>
+          <h2 className="text-lg font-semibold text-white mb-4">
+            Recent Alerts
+          </h2>
           {alerts.map((alert) => (
             <Card
               key={alert.id}
@@ -180,27 +200,41 @@ export default function MonitoringPage() {
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 mt-1">
-                    {alert.severity === "warning" && <AlertTriangle className="w-4 h-4 text-yellow-400" />}
-                    {alert.severity === "error" && <AlertTriangle className="w-4 h-4 text-red-400" />}
-                    {alert.severity === "info" && <Clock className="w-4 h-4 text-blue-400" />}
+                    {alert.severity === "warning" && (
+                      <AlertTriangle className="w-4 h-4 text-yellow-400" />
+                    )}
+                    {alert.severity === "error" && (
+                      <AlertTriangle className="w-4 h-4 text-red-400" />
+                    )}
+                    {alert.severity === "info" && (
+                      <Clock className="w-4 h-4 text-blue-400" />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
                       <h3 className="font-semibold text-white text-sm">
                         {alert.title}
                       </h3>
-                      <span className="text-xs text-gray-400">{alert.timestamp}</span>
+                      <span className="text-xs text-gray-400">
+                        {alert.timestamp}
+                      </span>
                     </div>
-                    <p className="text-gray-300 text-xs mb-2">{alert.description}</p>
+                    <p className="text-gray-300 text-xs mb-2">
+                      {alert.description}
+                    </p>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400">{alert.website}</span>
-                      <span className={`text-xs px-2 py-1 rounded ${
-                        alert.severity === "warning" 
-                          ? "bg-yellow-500/20 text-yellow-400" 
-                          : alert.severity === "error"
-                          ? "bg-red-500/20 text-red-400"
-                          : "bg-blue-500/20 text-blue-400"
-                      }`}>
+                      <span className="text-xs text-gray-400">
+                        {alert.website}
+                      </span>
+                      <span
+                        className={`text-xs px-2 py-1 rounded ${
+                          alert.severity === "warning"
+                            ? "bg-yellow-500/20 text-yellow-400"
+                            : alert.severity === "error"
+                            ? "bg-red-500/20 text-red-400"
+                            : "bg-blue-500/20 text-blue-400"
+                        }`}
+                      >
                         {alert.severity}
                       </span>
                     </div>
@@ -215,9 +249,7 @@ export default function MonitoringPage() {
         {alerts.length === 0 && (
           <div className="text-center py-12">
             <Monitor className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-            <h3 className="text-lg font-semibold text-white mb-2">
-              No alerts
-            </h3>
+            <h3 className="text-lg font-semibold text-white mb-2">No alerts</h3>
             <p className="text-gray-400 mb-4 text-sm">
               All systems are running smoothly
             </p>

@@ -1,12 +1,21 @@
 import React from "react";
-import { Brain, Sparkles, TrendingUp, AlertCircle, Lightbulb, BarChart3, Zap } from "lucide-react";
+import {
+  Brain,
+  Sparkles,
+  TrendingUp,
+  AlertCircle,
+  Lightbulb,
+  BarChart3,
+  Zap,
+} from "lucide-react";
 import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "AI",
-  description: "Get intelligent analytics insights, predictions, and automated recommendations.",
+  description:
+    "Get intelligent analytics insights, predictions, and automated recommendations.",
 };
 
 // Mock data - replace with real data from your API
@@ -42,13 +51,12 @@ const insights = [
 
 export default function AIPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       {/* Background Effects */}
       <div
         aria-hidden
         className="z-[1] absolute inset-0 pointer-events-none isolate opacity-30 contain-strict"
       >
-        <div className="w-[35rem] h-[80rem] -translate-y-[350px] absolute left-0 top-0 -rotate-45 rounded-full bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,hsla(0,0%,85%,.08)_0,hsla(0,0%,55%,.02)_50%,hsla(0,0%,45%,0)_80%)]" />
         <div className="h-[80rem] absolute left-0 top-0 w-56 -rotate-45 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.06)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)] [translate:5%_-50%]" />
       </div>
 
@@ -86,13 +94,15 @@ export default function AIPage() {
               <div className="flex items-center gap-2">
                 <Brain className="w-3.5 h-3.5 text-gray-400" />
                 <span className="text-gray-400 text-xs">
-                  <span className="font-semibold text-white">3</span> active insights
+                  <span className="font-semibold text-white">3</span> active
+                  insights
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-3.5 h-3.5 text-gray-400" />
                 <span className="text-gray-400 text-xs">
-                  <span className="font-semibold text-white">92%</span> avg confidence
+                  <span className="font-semibold text-white">92%</span> avg
+                  confidence
                 </span>
               </div>
             </div>
@@ -118,9 +128,15 @@ export default function AIPage() {
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 mt-1">
-                    {insight.type === "trend" && <TrendingUp className="w-4 h-4 text-blue-400" />}
-                    {insight.type === "optimization" && <Lightbulb className="w-4 h-4 text-yellow-400" />}
-                    {insight.type === "opportunity" && <AlertCircle className="w-4 h-4 text-green-400" />}
+                    {insight.type === "trend" && (
+                      <TrendingUp className="w-4 h-4 text-blue-400" />
+                    )}
+                    {insight.type === "optimization" && (
+                      <Lightbulb className="w-4 h-4 text-yellow-400" />
+                    )}
+                    {insight.type === "opportunity" && (
+                      <AlertCircle className="w-4 h-4 text-green-400" />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-2">
@@ -128,13 +144,15 @@ export default function AIPage() {
                         {insight.title}
                       </h3>
                       <div className="flex items-center gap-2">
-                        <span className={`text-xs px-2 py-1 rounded ${
-                          insight.impact === "high" 
-                            ? "bg-red-500/20 text-red-400" 
-                            : insight.impact === "medium"
-                            ? "bg-yellow-500/20 text-yellow-400"
-                            : "bg-green-500/20 text-green-400"
-                        }`}>
+                        <span
+                          className={`text-xs px-2 py-1 rounded ${
+                            insight.impact === "high"
+                              ? "bg-red-500/20 text-red-400"
+                              : insight.impact === "medium"
+                              ? "bg-yellow-500/20 text-yellow-400"
+                              : "bg-green-500/20 text-green-400"
+                          }`}
+                        >
                           {insight.impact}
                         </span>
                         <span className="text-xs text-gray-400">
@@ -142,10 +160,15 @@ export default function AIPage() {
                         </span>
                       </div>
                     </div>
-                    <p className="text-gray-300 text-xs mb-3">{insight.description}</p>
+                    <p className="text-gray-300 text-xs mb-3">
+                      {insight.description}
+                    </p>
                     <div className="bg-background/30 rounded p-2 border border-border/30">
                       <p className="text-xs text-gray-300">
-                        <span className="font-medium text-white">Recommendation:</span> {insight.recommendation}
+                        <span className="font-medium text-white">
+                          Recommendation:
+                        </span>{" "}
+                        {insight.recommendation}
                       </p>
                     </div>
                   </div>
@@ -163,7 +186,8 @@ export default function AIPage() {
               No insights yet
             </h3>
             <p className="text-gray-400 mb-4 text-sm">
-              AI will analyze your data and provide insights once you have enough traffic
+              AI will analyze your data and provide insights once you have
+              enough traffic
             </p>
             <Button className="bg-white hover:bg-gray-100 text-black text-sm px-4 py-2">
               <Sparkles className="w-4 h-4 mr-2" />
